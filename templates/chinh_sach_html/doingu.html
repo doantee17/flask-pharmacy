@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <title>Đội Ngũ Chuyên Môn - Nhà Thuốc Nhóm 14</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease;
+            display: inline-block;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Include header -->
+    {% include 'header.html' %}
+
+    <main class="main" style="margin-top: 140px; padding: 40px 20px; font-family: 'Roboto', sans-serif; background: #f8f9fa;">
+        <div class="container" style="max-width: 1200px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+            <h1 style="color: #060708; margin-bottom: 20px; text-align: center;">Đội Ngũ Chuyên Môn</h1>
+            <p style="font-size: 16px; line-height: 1.8; color: #333; text-align: justify;">
+                Đội ngũ chuyên môn của <strong>Nhà Thuốc Nhóm 14</strong> gồm các bác sĩ, y sĩ và dược sĩ giàu kinh nghiệm trong lĩnh vực y tế và dược phẩm. Chúng tôi cam kết mang đến cho khách hàng dịch vụ tư vấn chính xác, an toàn và tận tâm, góp phần nâng cao sức khỏe cộng đồng thông qua việc cung cấp các sản phẩm thuốc chất lượng và thông tin y khoa đáng tin cậy.
+            </p>
+
+            <div class="team-members" style="display: flex; flex-wrap: wrap; justify-content: space-around; margin-top: 30px;">
+                <!-- Thành viên -->
+                <div class="member" style="width: 250px; text-align: center; margin-bottom: 30px;">
+                    <img src="{{ url_for('static', filename='images/doingu/bacsi1.png') }}" alt="Đỗ Đức Quân" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
+                    <h3 style="margin-top: 15px;">Đỗ Đức Quân, Bác sĩ Y khoa</h3>
+                    <p style="font-size: 14px; color: #555;">Quản lý chuyên môn</p>
+                    <p style="font-size: 14px; color: #555;">
+                        Đảm nhận vai trò chỉ đạo chuyên môn, đảm bảo nội dung y khoa chính xác và cập nhật, mang đến giải pháp chăm sóc sức khỏe an toàn cho khách hàng.
+                    </p>
+                </div>
+
+                <div class="member" style="width: 250px; text-align: center; margin-bottom: 30px;">
+                    <img src="{{ url_for('static', filename='images/doingu/bacsi2.png') }}" alt="Nguyễn Công Phúc" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
+                    <h3 style="margin-top: 15px;">Nguyễn Công Phúc, Dược sĩ</h3>
+                    <p style="font-size: 14px; color: #555;">Chuyên viên dược phẩm</p>
+                    <p style="font-size: 14px; color: #555;">
+                        Tư vấn và quản lý các sản phẩm thuốc, đảm bảo cung cấp dược phẩm đạt chuẩn chất lượng, an toàn và hiệu quả cho khách hàng.
+                    </p>
+                </div>
+
+                <div class="member" style="width: 250px; text-align: center; margin-bottom: 30px;">
+                    <img src="{{ url_for('static', filename='images/doingu/bacsi3.png') }}" alt="Đoàn Văn Tiến" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
+                    <h3 style="margin-top: 15px;">Đoàn Văn Tiến, Y sĩ</h3>
+                    <p style="font-size: 14px; color: #555;">Tư vấn y khoa</p>
+                    <p style="font-size: 14px; color: #555;">
+                        Hỗ trợ tư vấn các vấn đề sức khỏe, giúp khách hàng lựa chọn thuốc phù hợp và sử dụng đúng cách.
+                    </p>
+                </div>
+
+                <div class="member" style="width: 250px; text-align: center; margin-bottom: 30px;">
+                   <img src="{{ url_for('static', filename='images/doingu/bacsi4.png') }}" alt="Tạ Xuân Phong" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
+                    <h3 style="margin-top: 15px;">Tạ Xuân Phong, Dược sĩ</h3>
+                    <p style="font-size: 14px; color: #555;">Chuyên viên kiểm soát chất lượng</p>
+                    <p style="font-size: 14px; color: #555;">
+                        Đảm bảo chất lượng sản phẩm và thông tin y tế chính xác, phù hợp với nhu cầu của khách hàng.
+                    </p>
+                </div>
+
+                <div class="member" style="width: 250px; text-align: center; margin-bottom: 30px;">
+                    <img src="{{ url_for('static', filename='images/doingu/bacsi5.png') }}" alt="Nguyễn Duy Quân" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
+                    <h3 style="margin-top: 15px;">Nguyễn Duy Quân, Bác sĩ</h3>
+                    <p style="font-size: 14px; color: #555;">Chuyên gia tư vấn sức khỏe</p>
+                    <p style="font-size: 14px; color: #555;">
+                        Hỗ trợ tư vấn và theo dõi tình trạng sức khỏe khách hàng, đưa ra các lời khuyên y tế chính xác và kịp thời.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Nút quay về trang chủ -->
+            <div style="margin-top: 40px; text-align: center;">
+                <a href="/" class="btn-primary">Quay về trang chủ</a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Include footer -->
+    {% include 'footer.html' %}
+
+</body>
+</html>

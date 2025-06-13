@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhà Thuốc Nhóm 14</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #0066cc;        /* Xanh dương y tế */
+            --secondary-color: #00a86b;      /* Xanh lá dược thảo */
+            --accent-color: #ff6b6b;         /* Đỏ nhẹ cho cảnh báo */
+            --success-color: #51cf66;        /* Xanh lá thành công */
+            --text-dark: #2c3e50;           /* Xanh đậm chuyên nghiệp */
+            --text-light: #718096;          /* Xám nhẹ */
+            --bg-light: #f7fafc;            /* Xám rất nhẹ */
+            --bg-white: #ffffff;            /* Trắng tinh khiết */
+            --border-color: #e2e8f0;        /* Viền nhẹ */
+            --medical-blue: #4a90e2;        /* Xanh y tế nhẹ */
+            --natural-green: #2d8f47;       /* Xanh tự nhiên */
+            --clean-gray: #f8f9fa;          /* Xám sạch */
+            --admin-color: #00a86b;         /* Màu cam cho admin */
+            --shadow-soft: 0 2px 8px rgba(0, 102, 204, 0.08);
+            --shadow-medium: 0 4px 12px rgba(0, 102, 204, 0.12);
+            --shadow-strong: 0 8px 24px rgba(0, 102, 204, 0.15);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--bg-light);
+            padding-top: 160px;
+        }
+
+        /* ===== HEADER STYLES ===== */
+        .header {
+            background: var(--bg-white);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-medium);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(0);
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .header.hide {
+            transform: translateY(-100%);
+        }
+
+        .header.show {
+            transform: translateY(0);
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: var(--shadow-strong);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Top Bar - Medical Professional */
+        .header-top {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--medical-blue) 100%);
+            color: white;
+            padding: 0.75rem 0;
+            font-size: 0.875rem;
+            position: relative;
+        }
+
+        .header-top::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .header-top-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .header-info {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .header-info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0.95;
+            transition: all 0.3s ease;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .header-info-item:hover {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .header-info-item i {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .header-social {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .social-link {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .social-link:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Main Header - Clean & Professional */
+        .header-main {
+            padding: 1.25rem 0;
+            background: var(--bg-white);
+        }
+
+        .header-main-content {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: translateY(-1px);
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.4rem;
+            box-shadow: var(--shadow-soft);
+            position: relative;
+        }
+
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            right: 3px;
+            bottom: 3px;
+            border-radius: 9px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .logo-text h1 {
+            font-size: 1.65rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.2rem;
+        }
+
+        .logo-text p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Search Bar - Medical Style */
+        .search-container {
+            position: relative;
+            max-width: 550px;
+            width: 100%;
+        }
+
+        .search-form {
+            position: relative;
+            display: flex;
+            background: var(--clean-gray);
+            border-radius: 25px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .search-form:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1), var(--shadow-medium);
+            background: white;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-light);
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--medical-blue));
+            border: none;
+            padding: 0 1.75rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            border-radius: 0 23px 23px 0;
+        }
+
+        .search-btn:hover {
+            background: linear-gradient(135deg, var(--medical-blue), var(--primary-color));
+            box-shadow: var(--shadow-medium);
+        }
+        #changePasswordBtn {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+#changePasswordBtn:hover {
+    background: var(--natural-green);
+    transform: translateY(-2px);
+}
+
+        /* Header Actions - Medical Professional */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: var(--clean-gray);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-btn:hover {
+            background: white;
+            box-shadow: var(--shadow-medium);
+            transform: translateY(-2px);
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: var(--accent-color);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.4rem;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .auth-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .auth-btn.primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--medical-blue));
+            color: white;
+        }
+
+        .auth-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .auth-btn.secondary {
+            background: white;
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .auth-btn.secondary:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: var(--clean-gray);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .user-info:hover {
+            background: white;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Navigation - Medical Categories với chữ luôn hiển thị rõ */
+        .nav {
+            background: #ffffff;
+            border-top: 1px solid var(--border-color);
+            padding: 0;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        /* Chữ luôn hiển thị rõ ràng */
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 1rem 1.5rem;
+            color: #1a1a1a; /* Màu đen đậm hơn */
+            text-decoration: none;
+            font-weight: 700; /* Chữ đậm hơn */
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+            font-size: 1rem;
+            opacity: 1; /* Luôn hiển thị 100% */
+            text-shadow: none; /* Loại bỏ shadow làm mờ chữ */
+        }
+
+        /* Hiệu ứng underline khi hover */
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 6px;
+            left: 50%;
+            width: 0;
+            height: 3px; /* Tăng độ dày của underline */
+            background: var(--primary-color);
+            transform: translateX(-50%);
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .nav-link:hover::after {
+            width: 70%; /* Tăng độ rộng underline */
+        }
+
+        /* Hover effect - chỉ thay đổi màu và background, không làm mờ chữ */
+        .nav-link:hover {
+            color: var(--primary-color);
+            background: rgba(0, 102, 204, 0.08);
+            transform: translateY(-1px);
+            opacity: 1; /* Vẫn hiển thị 100% */
+            font-weight: 700; /* Giữ nguyên độ đậm */
+        }
+
+        /* Icon luôn hiển thị rõ */
+        .nav-link i {
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+            transition: all 0.3s ease;
+            opacity: 1;
+        }
+
+        .nav-link:hover i {
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        /* Style đặc biệt cho Admin Panel */
+        .nav-link.admin {
+            color: var(--admin-color);
+            font-weight: 800;
+            background: rgba(255, 107, 53, 0.1);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+        }
+
+        .nav-link.admin:hover {
+            color: white;
+            background: var(--admin-color);
+            border-color: var(--admin-color);
+        }
+
+        .nav-link.admin i {
+            color: var(--admin-color);
+        }
+
+        .nav-link.admin:hover i {
+            color: white;
+        }
+
+        /* Auth Links Styles */
+        .auth-links {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .cart-icon {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: var(--clean-gray);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cart-icon:hover {
+            background: white;
+            box-shadow: var(--shadow-medium);
+            transform: translateY(-2px);
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: var(--accent-color);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.4rem;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        .username {
+            color: var(--text-dark);
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            background: var(--clean-gray);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .auth-links a {
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        #loginBtn, #registerBtn {
+            background: linear-gradient(135deg, var(--primary-color), var(--medical-blue));
+            color: white;
+        }
+
+        #loginBtn:hover, #registerBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        #logoutBtn {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        #logoutBtn:hover {
+            background: #e55555;
+            transform: translateY(-2px);
+        }
+
+        /* Main Content - Clean Medical Style */
+        .main-content {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f0f8ff 0%, #f7fafc 100%);
+            padding: 3rem 2rem;
+        }
+
+        .hero-section {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 3rem 0;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-color);
+        }
+
+        .hero-section h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        .hero-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .hero-section p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 2.5rem;
+            line-height: 1.7;
+            padding: 0 2rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-btn {
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .hero-btn.primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--medical-blue));
+            color: white;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .hero-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .hero-btn.secondary {
+            background: white;
+            color: var(--secondary-color);
+            border: 2px solid var(--secondary-color);
+        }
+
+        .hero-btn.secondary:hover {
+            background: var(--secondary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-top-content {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem 2rem;
+            }
+
+            .header-info {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .header-main-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                text-align: center;
+            }
+
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.25rem;
+            }
+
+            .nav-link {
+                padding: 0.8rem 1rem;
+                font-size: 0.85rem;
+                font-weight: 700; /* Giữ chữ đậm trên mobile */
+            }
+
+            .hero-section h3 {
+                font-size: 2rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            body {
+                padding-top: 200px;
+            }
+
+            .auth-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <!-- Header Top Bar -->
+        <div class="header-top">
+            <div class="header-top-content">
+                <div class="header-info">
+                    <div class="header-info-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Mở cửa: 7:00 - 22:00</span>
+                    </div>
+                    <div class="header-info-item">
+                        <i class="fas fa-phone"></i>
+                        <span>0123456789</span>
+                    </div>
+                    <div class="header-info-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>nhathuoc14@gmail.com</span>
+                    </div>
+                </div>
+                <div class="header-social">
+                    <a href="#" class="social-link">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="social-link">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Header -->
+        <div class="header-main">
+            <div class="header-container">
+                <div class="header-main-content">
+                    <a href="/" class="logo">
+                        <div class="logo-icon">
+                            <i class="fas fa-clinic-medical"></i>
+                        </div>
+                        <div class="logo-text">
+                            <h1>Nhà Thuốc 14</h1>
+                            <p>Chăm sóc sức khỏe toàn diện</p>
+                        </div>
+                    </a>
+
+                    <div class="search-container">
+                        <form class="search-form" action="/search" method="GET">
+                            <input type="text" class="search-input" name="query" placeholder="Tìm kiếm thuốc, thực phẩm chức năng...">
+                            <button type="submit" class="search-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="header-actions">
+                        <div class="auth-links">
+                            <!-- Giỏ hàng -->
+                            <div class="cart-icon" onclick="window.location.href='/orders'">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="cart-count" id="cartCount">0</span>
+                            </div>
+                            
+                            <!-- Auth buttons - Sử dụng Jinja2 template -->
+                            {% if username %}
+                                <!-- Hiển thị khi đã đăng nhập -->
+                                <div class="username">
+                                {{ 'ADMIN' if role == 'admin' else username }}
+                                </div>
+                                <a href="/change-password" id="changePasswordBtn">Đổi Mật Khẩu</a>
+                                <a href="/logout" id="logoutBtn">Đăng Xuất</a>
+                            {% else %}
+                                <!-- Hiển thị khi chưa đăng nhập -->
+                                <a href="/login" id="loginBtn">Đăng Nhập</a>
+                                <a href="/register" id="registerBtn">Đăng Ký</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <div class="nav-content">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/thuc-pham-chuc-nang" class="nav-link">
+                            <i class="fas fa-leaf"></i>
+                            Thực phẩm chức năng
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/duoc-my-pham" class="nav-link">
+                            <i class="fas fa-spa"></i>
+                            Dược mỹ phẩm
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/dung-cu-y-te" class="nav-link">
+                            <i class="fas fa-stethoscope"></i>
+                            Dụng cụ y tế
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/thuoc" class="nav-link">
+                            <i class="fas fa-pills"></i>
+                            Thuốc
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/chan-doan-benh" class="nav-link">
+                            <i class="fas fa-user-md"></i>
+                            Chẩn đoán bệnh
+                        </a>
+                    </li>
+                    <!-- Admin Panel - chỉ hiển thị khi role là admin -->
+                    {% if role == 'admin' %}
+                    <li class="nav-item">
+                        <a href="{{ url_for('admin_panel') }}" class="nav-link admin">
+                            <i class="fas fa-crown"></i>
+                            Admin Panel
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <script>
+        // Header scroll behavior - Smooth & Professional
+        let lastScrollY = window.scrollY;
+        let ticking = false;
+
+        function updateHeader() {
+            const header = document.getElementById('header');
+            const currentScrollY = window.scrollY;
+
+            if (currentScrollY < 80) {
+                // Near top - show header normally
+                header.classList.remove('hide', 'show');
+            } else if (currentScrollY > lastScrollY) {
+                // Scrolling down - hide header
+                header.classList.add('hide');
+                header.classList.remove('show');
+            } else {
+                // Scrolling up - show header with blur effect
+                header.classList.remove('hide');
+                header.classList.add('show');
+            }
+
+            lastScrollY = currentScrollY;
+            ticking = false;
+        }
+
+        function requestTick() {
+            if (!ticking) {
+                requestAnimationFrame(updateHeader);
+                ticking = true;
+            }
+        }
+
+        window.addEventListener('scroll', requestTick);
+
+        // Enhanced search functionality
+        const searchInput = document.querySelector('.search-input');
+        const searchForm = document.querySelector('.search-form');
+        
+        searchInput.addEventListener('focus', function() {
+            this.style.transform = 'translateY(-1px)';
+        });
+        
+        searchInput.addEventListener('blur', function() {
+            this.style.transform = 'translateY(0)';
+        });
+
+        // Cart interaction
+        const cartBtn = document.querySelector('.cart-icon');
+
+        cartBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+        });
+        // Smooth page load
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '1';
+        });
+
+function updateCartCount() {
+    fetch('/api/cart-count')
+        .then(response => response.json())
+        .then(data => {
+            const cartCount = document.getElementById('cartCount');
+            if (cartCount) {
+                cartCount.textContent = data.count;
+                cartCount.style.display = data.count > 0 ? 'block' : 'none';
+            }
+        })
+        .catch(error => console.error('Error fetching cart count:', error));
+}
+
+// GỌI NGAY KHI DOM TẢI XONG
+window.addEventListener('load', updateCartCount);
+    </script>
+</body>
+</html>

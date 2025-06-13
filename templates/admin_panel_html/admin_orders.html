@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý đơn hàng - Nhà thuốc Online</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+
+                /* Fix flickering issues */
+        .btn-action {
+            transition: none !important;
+            transform: none !important;
+        }
+
+        .order-card {
+            transition: none !important;
+            transform: none !important;
+        }
+
+        .order-card:hover {
+            transform: none !important;
+        }
+
+        /* Prevent modal backdrop issues */
+        .modal-backdrop {
+            z-index: 1040;
+        }
+
+        .modal {
+            z-index: 1050;
+        }
+
+        /* Stable button states */
+        .btn:hover, .btn:focus {
+            transform: none !important;
+        }
+        .admin-sidebar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .admin-sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 12px 20px;
+            margin: 5px 0;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .admin-sidebar .nav-link:hover,
+        .admin-sidebar .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .main-content {
+            padding: 20px;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+        .orders-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        .orders-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+            margin: -30px -30px 30px -30px;
+        }
+        .order-card {
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        .order-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .order-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            border-radius: 10px 10px 0 0;
+        }
+        .order-body {
+            padding: 20px;
+        }
+        .badge-status {
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+        .btn-action {
+            margin: 2px;
+            border-radius: 6px;
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+        .order-details {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .filter-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .stats-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            flex: 1;
+        }
+        .stat-item.pending {
+            background: linear-gradient(135deg, #ffa726 0%, #ff7043 100%);
+        }
+        .stat-item.confirmed {
+            background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+        }
+        .stat-item.shipped {
+            background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
+        }
+        .stat-item.cancelled {
+            background: linear-gradient(135deg, #ef5350 0%, #c62828 100%);
+        }
+        .customer-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .customer-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .customer-detail-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+        }
+        .customer-detail-item i {
+            width: 20px;
+            margin-right: 10px;
+            color: #2196f3;
+        }
+        .product-item {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+        .product-item:last-child {
+            border-bottom: none;
+        }
+        .alert {
+            border-radius: 8px;
+            border: none;
+        }
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .notes-section {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #ffc107;
+        }
+        .admin-notes-section {
+            background: #d1ecf1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #17a2b8;
+        }
+        .order-timeline {
+            border-left: 2px solid #dee2e6;
+            padding-left: 20px;
+            margin-top: 20px;
+        }
+        .timeline-item {
+            position: relative;
+            padding-bottom: 15px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -25px;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #6c757d;
+        }
+        .timeline-item.active::before {
+            background: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 admin-sidebar p-0">
+                <div class="p-3">
+                    <h4><i class="fas fa-user-shield"></i> Admin Panel</h4>
+                    <hr>
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="{{ url_for('admin_panel') }}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_products') }}">
+                            <i class="fas fa-pills"></i> Quản lý sản phẩm
+                        </a>
+                        <a class="nav-link active" href="{{ url_for('admin_orders') }}">
+                            <i class="fas fa-shopping-cart"></i> Quản lý đơn hàng
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_diseases') }}">
+                            <i class="fas fa-stethoscope"></i> Quản lý bệnh
+                        </a>
+                       <a class="nav-link" href="{{ url_for('admin_users') }}">
+                            <i class="fas fa-user"></i> Quản lý người dùng
+                        </a>
+                        <hr>
+                        <a class="nav-link" href="{{ url_for('home') }}">
+                            <i class="fas fa-home"></i> Về trang chủ
+                        </a>
+                        <a class="nav-link" href="{{ url_for('logout') }}">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2><i class="fas fa-shopping-cart"></i> Quản lý đơn hàng</h2>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{{ url_for('admin_panel') }}">Dashboard</a></li>
+                                <li class="breadcrumb-item active">Quản lý đơn hàng</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <span class="text-muted">Xin chào, {{ 'ADMIN' }}!</span>
+                </div>
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                                <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }}"></i>
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <!-- Statistics -->
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <h4>{{ total_orders or 0 }}</h4>
+                        <small>Tổng đơn hàng</small>
+                    </div>
+                    <div class="stat-item pending">
+                        <h4>{{ pending_orders or 0 }}</h4>
+                        <small>Chờ duyệt</small>
+                    </div>
+                    <div class="stat-item confirmed">
+                        <h4>{{ confirmed_orders or 0 }}</h4>
+                        <small>Đã duyệt</small>
+                    </div>
+                    <div class="stat-item shipped">
+                        <h4>{{ shipped_orders or 0 }}</h4>
+                        <small>Đã giao</small>
+                    </div>
+                    <div class="stat-item cancelled">
+                        <h4>{{ cancelled_orders or 0 }}</h4>
+                        <small>Đã hủy</small>
+                    </div>
+                </div>
+
+                <!-- Filter -->
+                        <div class="filter-card">
+                            <form method="GET" class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label">Trạng thái</label>
+                                    <select name="status" class="form-select">
+                                        <option value="" {{ 'selected' if request.args.get('status', '') == '' }}>Tất cả</option>
+                                        <option value="pending" {{ 'selected' if request.args.get('status') == 'pending' }}>Chờ duyệt</option>
+                                        <option value="confirmed" {{ 'selected' if request.args.get('status') == 'confirmed' }}>Đã duyệt</option>
+                                        <option value="shipped" {{ 'selected' if request.args.get('status') == 'shipped' }}>Đã giao</option>
+                                        <option value="cancelled" {{ 'selected' if request.args.get('status') == 'cancelled' }}>Đã hủy</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">&nbsp;</label>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-search"></i> Lọc
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+
+                <!-- Orders List -->
+                <div class="orders-container">
+                    <div class="orders-header">
+                        <h4 class="mb-0"><i class="fas fa-list"></i> Danh sách đơn hàng</h4>
+                    </div>
+
+                    {% if orders %}
+                        {% for order in orders %}
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div class="row align-items-center">
+                                    <div class="col-md-4">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-receipt"></i> Đơn hàng #{{ order.id }}
+                                        </h6>
+                                        <small class="text-muted">{{ order.created_at.strftime('%d/%m/%Y %H:%M') if order.created_at else '' }}</small>
+                                    </div>
+                                    <div class="col-md-4 text-center">
+                                        {% if order.status == 'pending' %}
+                                            <span class="badge bg-warning badge-status">Chờ duyệt</span>
+                                        {% elif order.status == 'confirmed' %}
+                                            <span class="badge bg-success badge-status">Đã duyệt</span>
+                                        {% elif order.status == 'shipped' %}
+                                            <span class="badge bg-info badge-status">Đã giao</span>
+                                        {% elif order.status == 'cancelled' %}
+                                            <span class="badge bg-danger badge-status">Đã hủy</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <strong class="text-primary">{{ "{:,.0f}".format(order.total_amount or 0) }}đ</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="order-body">
+                                <!-- Customer Info -->
+                                <div class="customer-info">
+                                    <h6 class="mb-3"><i class="fas fa-user-circle"></i> Thông tin khách hàng</h6>
+                                    <div class="customer-details">
+                                        <div class="customer-detail-item">
+                                            <i class="fas fa-user"></i>
+                                            <div>
+                                                <strong>{{ order.full_name or 'Chưa có tên' }}</strong>
+                                            </div>
+                                        </div>
+                                        <div class="customer-detail-item">
+                                            <i class="fas fa-phone"></i>
+                                            <div>{{ order.phone or 'Chưa có SĐT' }}</div>
+                                        </div>
+                                        <div class="customer-detail-item">
+                                            <i class="fas fa-envelope"></i>
+                                            <div>{{ order.email or 'Chưa có email' }}</div>
+                                        </div>
+                                        <div class="customer-detail-item">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <div>{{ order.address or 'Chưa có địa chỉ' }}</div>
+                                        </div>
+                                        {% if order.district %}
+                                        <div class="customer-detail-item">
+                                            <i class="fas fa-building"></i>
+                                            <div>{{ order.district }}</div>
+                                        </div>
+                                        {% endif %}
+                                        {% if order.city %}
+                                        <div class="customer-detail-item">
+                                            <i class="fas fa-city"></i>
+                                            <div>{{ order.city }}</div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Products -->
+                                <div class="order-details">
+                                    <h6><i class="fas fa-pills"></i> Sản phẩm đã đặt ({{ order.order_items|length if order.order_items else 0 }} sản phẩm):</h6>
+                                    {% if order.order_items %}
+                                        {% for item in order.order_items %}
+                                        <div class="product-item">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-5">
+                                                    <strong>{{ item.product_name or 'Tên sản phẩm không xác định' }}</strong>
+                                                    {% if item.product_description %}
+                                                    <br><small class="text-muted">{{ item.product_description }}</small>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-2 text-center">
+                                                    <span class="badge bg-secondary">SL: {{ item.quantity or 0 }}</span>
+                                                </div>
+                                                <div class="col-md-2 text-center">
+                                                    <small>Đơn giá:</small><br>
+                                                    <strong>{{ "{:,.0f}".format(item.price or 0) }}đ</strong>
+                                                </div>
+                                                <div class="col-md-3 text-end">
+                                                    <small>Thành tiền:</small><br>
+                                                    <strong class="text-success">{{ "{:,.0f}".format((item.quantity or 0) * (item.price or 0)) }}đ</strong>
+                                                </div>
+                                                <!-- Thêm nút này vào phần "Thao tác khác" -->
+                                              <button type="button" class="btn btn-outline-danger btn-action" onclick="showDeleteModal({{ order.id }}); return false;">
+                                                <i class="fas fa-trash"></i> Xóa đơn hàng
+                                             </button>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                        <div class="text-end mt-3 pt-3 border-top">
+                                            <h5 class="text-primary">
+                                                <strong>Tổng cộng: {{ "{:,.0f}".format(order.total_amount or 0) }}đ</strong>
+                                            </h5>
+                                        </div>
+                                    {% else %}
+                                        <div class="text-center py-3">
+                                            <i class="fas fa-box-open fa-2x text-muted"></i>
+                                            <p class="text-muted mt-2">Không có sản phẩm trong đơn hàng</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Customer Notes -->
+                                {% if order.notes %}
+                                <div class="notes-section">
+                                    <h6><i class="fas fa-sticky-note"></i> Ghi chú của khách hàng:</h6>
+                                    <p class="mb-0">{{ order.notes }}</p>
+                                </div>
+                                {% endif %}
+
+                                <!-- Admin Notes -->
+                                {% if order.admin_notes %}
+                                <div class="admin-notes-section">
+                                    <h6><i class="fas fa-user-shield"></i> Ghi chú của admin:</h6>
+                                    <p class="mb-0">{{ order.admin_notes }}</p>
+                                </div>
+                                {% endif %}
+
+                                <!-- Order Timeline -->
+                                <div class="order-timeline">
+                                    <h6><i class="fas fa-history"></i> Lịch sử đơn hàng:</h6>
+                                    <div class="timeline-item {{ 'active' if order.created_at }}">
+                                        <strong>Đơn hàng được tạo</strong><br>
+                                        <small class="text-muted">{{ order.created_at | format_datetime }}</small>
+                                    </div>
+                                    {% if order.status in ['confirmed', 'shipped'] %}
+                                    <div class="timeline-item active">
+                                        <strong>Đơn hàng đã được duyệt</strong><br>
+                                        <small class="text-muted">{{ order.updated_at | format_datetime }}</small>
+                                    </div>
+                                    {% endif %}
+                                    {% if order.status == 'shipped' %}
+                                    <div class="timeline-item active">
+                                        <strong>Đơn hàng đã được giao</strong><br>
+                                        <small class="text-muted">{{ order.updated_at | format_datetime }}</small>
+                                    </div>
+                                    {% endif %}
+                                    {% if order.status == 'cancelled' %}
+                                    <div class="timeline-item" style="color: #dc3545;">
+                                        <strong>Đơn hàng đã bị hủy</strong><br>
+                                        <small class="text-muted">{{ order.updated_at | format_datetime }}</small>
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="mt-4 pt-3 border-top">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <h6 class="mb-2">Thao tác với đơn hàng:</h6>
+                                            <!-- Status Actions -->
+                                            {% if order.status == 'pending' %}
+                                                <button class="btn btn-success btn-action" onclick="updateOrderStatus({{ order.id }}, 'confirmed')">
+                                                    <i class="fas fa-check"></i> Duyệt đơn hàng
+                                                </button>
+                                                <button class="btn btn-danger btn-action" onclick="updateOrderStatus({{ order.id }}, 'cancelled')">
+                                                    <i class="fas fa-times"></i> Hủy đơn hàng
+                                                </button>
+
+                                            {% elif order.status == 'confirmed' %}
+                                                <button class="btn btn-info btn-action" onclick="updateOrderStatus({{ order.id }}, 'shipped')">
+                                                    <i class="fas fa-shipping-fast"></i> Đánh dấu đã giao
+                                                </button>
+                                                <button class="btn btn-warning btn-action" onclick="updateOrderStatus({{ order.id }}, 'pending')">
+                                                    <i class="fas fa-undo"></i> Về chờ duyệt
+                                                </button>
+                                                <button class="btn btn-danger btn-action" onclick="updateOrderStatus({{ order.id }}, 'cancelled')">
+                                                    <i class="fas fa-ban"></i> Hủy đơn hàng
+                                                </button>
+                                            {% elif order.status == 'shipped' %}
+                                                <button class="btn btn-warning btn-action" onclick="updateOrderStatus({{ order.id }}, 'confirmed')">
+                                                    <i class="fas fa-undo"></i> Về đã duyệt
+                                                </button>
+                                            {% elif order.status == 'cancelled' %}
+                                                <button class="btn btn-success btn-action" onclick="updateOrderStatus({{ order.id }}, 'pending')">
+                                                    <i class="fas fa-redo"></i> Khôi phục đơn hàng
+                                                </button>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-4 text-end">
+                                            <h6 class="mb-2">Thao tác khác:</h6>
+                                            <!-- Delete Order Modal -->
+                                            <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header bg-danger text-white">
+                                                            <h5 class="modal-title">
+                                                                <i class="fas fa-trash"></i> Xóa đơn hàng
+                                                            </h5>
+                                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="alert alert-danger">
+                                                                <i class="fas fa-exclamation-triangle"></i>
+                                                                <strong>Cảnh báo:</strong> Hành động này không thể hoàn tác!
+                                                            </div>
+                                                            <p>Bạn có chắc chắn muốn xóa vĩnh viễn đơn hàng <strong>#<span id="deleteOrderNumber"></span></strong>?</p>
+                                                            <p class="text-muted">Tất cả thông tin liên quan đến đơn hàng này sẽ bị xóa khỏi hệ thống.</p>
+                                                            <input type="hidden" id="deleteOrderId">
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                                            <button type="button" class="btn btn-danger" onclick="confirmDelete()">
+                                                                <i class="fas fa-trash"></i> Xóa vĩnh viễn
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <!-- Other Actions -->
+                                            <button class="btn btn-outline-primary btn-action" onclick="showNotesModal({{ order.id }}, '{{ order.admin_notes|replace("'", "\\'") if order.admin_notes else '' }}')">
+                                                <i class="fas fa-sticky-note"></i> {{ 'Sửa ghi chú' if order.admin_notes else 'Thêm ghi chú' }}
+                                            </button>
+                                            <button class="btn btn-outline-info btn-action" onclick="printOrder({{ order.id }})">
+                                                <i class="fas fa-print"></i> In đơn hàng
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-inbox fa-4x text-muted mb-4"></i>
+                            <h5 class="text-muted">Không có đơn hàng nào</h5>
+                            <p class="text-muted">Chưa có đơn hàng nào được tạo hoặc không có đơn hàng phù hợp với bộ lọc hiện tại.</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Pagination -->
+                {% if pagination and pagination.pages > 1 %}
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        {% if pagination.has_prev %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin_orders', page=pagination.prev_num, **request.args) }}">
+                                    <i class="fas fa-angle-left"></i> Trước
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        {% for page_num in pagination.iter_pages() %}
+                            {% if page_num %}
+                                {% if page_num != pagination.page %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('admin_orders', page=page_num, **request.args) }}">{{ page_num }}</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ page_num }}</span>
+                                    </li>
+                                {% endif %}
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if pagination.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin_orders', page=pagination.next_num, **request.args) }}">
+                                    Sau <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div class="modal fade" id="orderDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-receipt"></i> Chi tiết đơn hàng</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="orderDetailsContent">
+                    <div class="text-center">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p class="mt-2">Đang tải chi tiết đơn hàng...</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notes Modal -->
+    <div class="modal fade" id="notesModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-sticky-note"></i> Ghi chú admin</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="notesForm">
+                        <div class="mb-3">
+                            <label for="adminNotes" class="form-label">Ghi chú của admin cho đơn hàng này:</label>
+                            <textarea class="form-control" id="adminNotes" rows="5" placeholder="Nhập ghi chú về đơn hàng, trạng thái xử lý, lý do từ chối (nếu có)..."></textarea>
+                            <div class="form-text">Ghi chú này sẽ được lưu lại và có thể xem được trong lịch sử đơn hàng.</div>
+                        </div>
+                        <input type="hidden" id="notesOrderId">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" onclick="saveNotes()">
+                        <i class="fas fa-save"></i> Lưu ghi chú
+                    </button
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Reject Order Modal -->
+    <div class="modal fade" id="rejectModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Từ chối đơn hàng</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Bạn có chắc chắn muốn từ chối đơn hàng này?
+                    </div>
+                    <form id="rejectForm">
+                        <div class="mb-3">
+                            <label for="rejectReason" class="form-label">Lý do từ chói:</label>
+                            <textarea class="form-control" id="rejectReason" rows="3" placeholder="Nhập lý do từ chối đơn hàng..." required></textarea>
+                        </div>
+                        <input type="hidden" id="rejectOrderId">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmReject()">Từ chối đơn hàng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Prevent multiple event bindings
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize modals only once
+        window.deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'), {
+            backdrop: 'static',
+            keyboard: false
+        });
+        
+        window.notesModal = new bootstrap.Modal(document.getElementById('notesModal'), {
+            backdrop: 'static',
+            keyboard: false
+        });
+    });
+
+    // Update order status
+    window.updateOrderStatus = function(orderId, status) {
+        if (confirm('Bạn có chắc chắn muốn thay đổi trạng thái đơn hàng này?')) {
+            fetch(`/admin/orders/${orderId}/status`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    status: status
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Có lỗi xảy ra: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi cập nhật trạng thái đơn hàng');
+            });
+        }
+    }
+
+    // Show delete modal - FIX: Remove event listeners that cause flickering
+    window.showDeleteModal = function(orderId) {
+        // Stop any existing events
+        event.stopPropagation();
+        event.preventDefault();
+        
+        document.getElementById('deleteOrderId').value = orderId;
+        document.getElementById('deleteOrderNumber').textContent = orderId;
+        
+        // Show modal safely
+        setTimeout(() => {
+            const modal = document.getElementById('deleteModal');
+            const bootstrapModal = bootstrap.Modal.getOrCreateInstance(modal);
+            bootstrapModal.show();
+        });
+    }
+
+    // Confirm delete
+    window.confirmDelete = function() {
+        const orderId = document.getElementById('deleteOrderId').value;
+        
+        // Disable button to prevent multiple clicks
+        const deleteBtn = event.target;
+        deleteBtn.disabled = true;
+        deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xóa...';
+        
+        fetch(`/admin/orders/${orderId}/delete`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Close modal first
+                const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+                if (modal) modal.hide();
+                
+                // Show success message
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-success alert-dismissible fade show';
+                alertDiv.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    Đã xóa đơn hàng #${orderId} thành công
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                document.querySelector('.main-content').insertBefore(alertDiv, document.querySelector('.stats-row'));
+                
+                // Reload after delay
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                alert('Có lỗi xảy ra: ' + data.message);
+                deleteBtn.disabled = false;
+                deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Xóa vĩnh viễn';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra khi xóa đơn hàng');
+            deleteBtn.disabled = false;
+            deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Xóa vĩnh viễn';
+        });
+    }
+
+    // Show notes modal
+    window.showNotesModal = function(orderId, currentNotes) {
+        event.stopPropagation();
+        event.preventDefault();
+        
+        document.getElementById('notesOrderId').value = orderId;
+        document.getElementById('adminNotes').value = currentNotes;
+        
+        setTimeout(() => {
+            const modal = document.getElementById('notesModal');
+            const bootstrapModal = bootstrap.Modal.getOrCreateInstance(modal);
+            bootstrapModal.show();
+        }, 100);
+    }
+
+    // Save notes
+    window.saveNotes = function() {
+        const orderId = document.getElementById('notesOrderId').value;
+        const notes = document.getElementById('adminNotes').value;
+
+        fetch(`/admin/orders/${orderId}/notes`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                admin_notes: notes
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Có lỗi xảy ra: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra khi lưu ghi chú');
+        });
+    }
+</script>

@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chẩn Đoán Bệnh - NHÀ THUỐC NHÓM 14</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        body {
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .header {
+            background: linear-gradient(135deg, #1E90FF, #4169E1);
+            color: #fff;
+            padding: 15px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo h1 {
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        .main {
+            padding: 40px 0;
+        }
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        .page-header h1 {
+            font-size: 42px;
+            color: #1E90FF;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .page-header p {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .warning-text {
+            background: linear-gradient(135deg, #FFF3CD, #FCF8E3);
+            color: #856404;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #FFC107;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .search-section {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+        .search-box {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            border-color: #1E90FF;
+            box-shadow: 0 0 15px rgba(30,144,255,0.2);
+        }
+        .search-btn {
+            background: linear-gradient(135deg, #1E90FF, #4169E1);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+        .search-btn:hover {
+            background: linear-gradient(135deg, #1873e6, #2c5fb3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30,144,255,0.4);
+        }
+        .filter-section {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .filter-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 2px solid #dee2e6;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            color: #495057;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border-color: #28a745;
+            color: white;
+            transform: translateY(-2px);
+        }
+        .diseases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .disease-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .disease-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        .disease-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .disease-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .category-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+        }
+        .disease-info {
+            padding: 25px;
+        }
+        .disease-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1E90FF;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+        .disease-description {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .symptoms-section, .treatment-section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .symptoms-list, .treatment-text {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+        }
+        .symptoms-list {
+            border-left: 4px solid #FF6B35;
+        }
+        .treatment-text {
+            border-left: 4px solid #28a745;
+        }
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .no-results i {
+            font-size: 64px;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+        .no-results h3 {
+            color: #666;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .no-results p {
+            color: #999;
+            font-size: 16px;
+        }
+        .flash-messages {
+            margin: 20px 0;
+        }
+        .flash-message {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .flash-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .flash-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .quick-tips {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            border-left: 5px solid #2196f3;
+        }
+        .quick-tips h3 {
+            color: #1565c0;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .tip-item {
+            background: rgba(255,255,255,0.8);
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .tip-item i {
+            color: #2196f3;
+            font-size: 20px;
+        }
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .search-box {
+                flex-direction: column;
+            }
+            .diseases-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .filter-section {
+                flex-direction: column;
+                align-items: center;
+            }
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    {%include 'header.html' %}
+
+<main class="main">
+    <div class="container">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="page-header">
+            <h1><i class="fas fa-stethoscope"></i> Chẩn Đoán Bệnh</h1>
+            <p>Tra cứu thông tin về các bệnh lý phổ biến</p>
+            <p>Tìm hiểu triệu chứng và phương pháp điều trị</p>
+            <div class="warning-text">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Lưu ý:</strong> Thông tin chỉ mang tính chất tham khảo. 
+                Vui lòng tham khảo ý kiến bác sĩ để có chẩn đoán và điều trị chính xác.
+            </div>
+        </div>
+
+        <div class="quick-tips">
+            <h3><i class="fas fa-lightbulb"></i> Mẹo tìm kiếm hiệu quả</h3>
+            <div class="tips-grid">
+                <div class="tip-item">
+                    <i class="fas fa-search"></i>
+                    <span>Tìm theo tên bệnh hoặc triệu chứng</span>
+                </div>
+                <div class="tip-item">
+                    <i class="fas fa-filter"></i>
+                    <span>Lọc theo chuyên khoa</span>
+                </div>
+                <div class="tip-item">
+                    <i class="fas fa-user-md"></i>
+                    <span>Tham khảo ý kiến bác sĩ</span>
+                </div>
+                <div class="tip-item">
+                    <i class="fas fa-pills"></i>
+                    <span>Xem sản phẩm liên quan</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" 
+                       class="search-input" 
+                       id="searchInput"
+                       placeholder="Nhập tên bệnh, triệu chứng hoặc từ khóa tìm kiếm...">
+                <button class="search-btn" onclick="searchDiseases()">
+                    <i class="fas fa-search"></i> Tìm kiếm
+                </button>
+            </div>
+            
+            <div class="filter-section">
+                <button class="filter-btn active" data-category="all">
+                    <i class="fas fa-list"></i> Tất cả
+                </button>
+                <button class="filter-btn" data-category="respiratory">
+                    <i class="fas fa-lungs"></i> Hô hấp
+                </button>
+                <button class="filter-btn" data-category="digestive">
+                    <i class="fas fa-stomach"></i> Tiêu hóa
+                </button>
+                <button class="filter-btn" data-category="cardiovascular">
+                    <i class="fas fa-heartbeat"></i> Tim mạch
+                </button>
+                <button class="filter-btn" data-category="endocrine">
+                    <i class="fas fa-syringe"></i> Nội tiết
+                </button>
+                <button class="filter-btn" data-category="musculoskeletal">
+                    <i class="fas fa-bone"></i> Xương khớp
+                </button>
+            </div>
+        </div>
+
+        <div id="diseasesContainer">
+            {% if diseases %}
+                <div class="diseases-grid">
+                    {% for disease in diseases %}
+                        <div class="disease-card" data-category="{{ disease['category'] }}" data-name="{{ disease['name'].lower() }}" data-symptoms="{{ disease['symptoms'].lower() }}">
+                            <div class="disease-image">
+                                <img src="{{ disease['image_url'] }}" alt="{{ disease['name'] }}">
+                                <div class="category-badge">
+                                    {% if disease['category'] == 'respiratory' %}
+                                        <i class="fas fa-lungs"></i> Hô hấp
+                                    {% elif disease['category'] == 'digestive' %}
+                                        <i class="fas fa-stomach"></i> Tiêu hóa
+                                    {% elif disease['category'] == 'cardiovascular' %}
+                                        <i class="fas fa-heartbeat"></i> Tim mạch
+                                    {% elif disease['category'] == 'endocrine' %}
+                                        <i class="fas fa-syringe"></i> Nội tiết
+                                    {% elif disease['category'] == 'musculoskeletal' %}
+                                        <i class="fas fa-bone"></i> Xương khớp
+                                    {% else %}
+                                        <i class="fas fa-medkit"></i> Khác
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="disease-info">
+                                <h3 class="disease-name">{{ disease['name'] }}</h3>
+                                <p class="disease-description">{{ disease['description'] }}</p>
+                                
+                                <div class="symptoms-section">
+                                    <div class="section-title">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        Triệu chứng
+                                    </div>
+                                    <div class="symptoms-list">{{ disease['symptoms'] }}</div>
+                                </div>
+                                
+                                <div class="treatment-section">
+                                    <div class="section-title">
+                                        <i class="fas fa-medkit"></i>
+                                        Điều trị
+                                    </div>
+                                    <div class="treatment-text">{{ disease['treatment'] }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <h3>Chưa có thông tin bệnh lý</h3>
+                    <p>Hệ thống đang được cập nhật thêm thông tin!</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div id="noResultsMessage" class="no-results" style="display: none;">
+            <i class="fas fa-search"></i>
+            <h3>Không có kết quả phù hợp!</h3>
+            <p>Thử tìm kiếm với từ khóa khác hoặc chọn chuyên khoa phù hợp</p>
+        </div>
+    </div>
+</main>
+    <script>
+        // Lưu trữ tất cả các card bệnh để filter
+        const allDiseaseCards = document.querySelectorAll('.disease-card');
+        const diseasesContainer = document.getElementById('diseasesContainer');
+        const noResultsMessage = document.getElementById('noResultsMessage');
+
+        // Xử lý filter theo category
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                const category = this.dataset.category;
+                filterDiseases(category);
+            });
+        });
+
+        // Xử lý tìm kiếm
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            searchDiseases(searchTerm);
+        });
+
+        // Enter key search
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchDiseases();
+            }
+        });
+
+        function searchDiseases(searchTerm = null) {
+            if (searchTerm === null) {
+                searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            }
+            
+            let visibleCount = 0;
+            
+            allDiseaseCards.forEach(card => {
+                const name = card.dataset.name;
+                const symptoms = card.dataset.symptoms;
+                const isVisible = name.includes(searchTerm) || symptoms.includes(searchTerm);
+                
+                if (isVisible) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Show/hide no results message
+            if (visibleCount === 0 && searchTerm !== '') {
+                diseasesContainer.style.display = 'none';
+                noResultsMessage.style.display = 'block';
+            } else {
+                diseasesContainer.style.display = 'block';
+                noResultsMessage.style.display = 'none';
+            }
+        }
+
+        function filterDiseases(category) {
+            let visibleCount = 0;
+            
+            allDiseaseCards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Clear search when filtering
+            document.getElementById('searchInput').value = '';
+            
+            // Show/hide no results message
+            if (visibleCount === 0) {
+                diseasesContainer.style.display = 'none';
+                noResultsMessage.style.display = 'block';
+            } else {
+                diseasesContainer.style.display = 'block';
+                noResultsMessage.style.display = 'none';
+            }
+        }
+
+        // Thêm hiệu ứng hover cho disease cards
+        document.querySelectorAll('.disease-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Auto hide flash messages
+        setTimeout(() => {
+            const flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach(msg => {
+                msg.style.opacity = '0';
+                msg.style.transform = 'translateY(-20px)';
+                setTimeout(() => msg.remove(), 300);
+            });
+        }, 5000);
+
+        // Smooth scroll animation for cards
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Apply animation to all disease cards
+        allDiseaseCards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+            observer.observe(card);
+        });
+    </script>
+</body>
+{%include 'footer.html' %}
+</html>

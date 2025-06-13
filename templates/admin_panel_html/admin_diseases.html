@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý bệnh - Nhà thuốc Online</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .admin-sidebar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .admin-sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 12px 20px;
+            margin: 5px 0;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .admin-sidebar .nav-link:hover,
+        .admin-sidebar .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .disease-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        .disease-card:hover {
+            transform: translateY(-5px);
+        }
+        .disease-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .disease-content {
+            padding: 20px;
+        }
+        .category-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-weight: 600;
+        }
+        .btn-danger {
+            border-radius: 8px;
+        }
+        .btn-warning {
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 admin-sidebar p-0">
+                <div class="p-3">
+                    <h4><i class="fas fa-user-shield"></i> Admin Panel</h4>
+                    <hr>
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="{{ url_for('admin_panel') }}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_products') }}">
+                            <i class="fas fa-pills"></i> Quản lý sản phẩm
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_orders') }}">
+                            <i class="fas fa-shopping-cart"></i> Quản lý đơn hàng
+                        </a>
+                        <a class="nav-link active" href="{{ url_for('admin_diseases') }}">
+                            <i class="fas fa-stethoscope"></i> Quản lý bệnh
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_users') }}">
+                            <i class="fas fa-user"></i> Quản lý người dùng
+                        </a>
+                        <hr>
+                        <a class="nav-link" href="{{ url_for('home') }}">
+                            <i class="fas fa-home"></i> Về trang chủ
+                        </a>
+                        <a class="nav-link" href="{{ url_for('logout') }}">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="fas fa-stethoscope"></i> Quản lý bệnh</h2>
+                    <a href="{{ url_for('add_disease') }}" class="btn btn-primary">
+                        <i class="fas fa-plus-circle"></i> Thêm bệnh mới
+                    </a>
+                </div>
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <!-- Search and Filter -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm bệnh...">
+                            <button class="btn btn-outline-secondary" type="button">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <select class="form-select" id="categoryFilter">
+                            <option value="">Tất cả danh mục</option>
+                            <option value="Hô hấp">Hô hấp</option>
+                            <option value="Tim mạch">Tim mạch</option>
+                            <option value="Tiêu hóa">Tiêu hóa</option>
+                            <option value="Xương khớp">Xương khớp</option>
+                            <option value="Nội tiết">Nội tiết</option>
+                            <option value="Khác">Khác</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Diseases Grid -->
+                <div class="row" id="diseasesGrid">
+                    {% for disease in diseases %}
+                    <div class="col-md-6 col-lg-4 disease-item" data-category="{{ disease.category }}" data-name="{{ disease.name.lower() }}">
+                        <div class="disease-card">
+                            <img src="{{ disease.image_url }}" alt="{{ disease.name }}" class="disease-image">
+                            <div class="disease-content">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title">{{ disease.name }}</h5>
+                                    <span class="category-badge">{{ disease.category }}</span>
+                                </div>
+                                
+                                <p class="card-text text-muted">{{ disease.description[:100] }}...</p>
+                                
+                                <div class="mb-3">
+                                    <h6><i class="fas fa-exclamation-triangle text-warning"></i> Triệu chứng:</h6>
+                                    <ul class="list-unstyled">
+                                        {% for symptom in disease.symptoms[:3] %}
+                                        <li><small>• {{ symptom }}</small></li>
+                                        {% endfor %}
+                                        {% if disease.symptoms|length > 3 %}
+                                        <li><small class="text-muted">... và {{ disease.symptoms|length - 3 }} triệu chứng khác</small></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                                
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewDisease({{ disease.id }})">
+                                        <i class="fas fa-eye"></i> Xem
+                                    </button>
+                                    <button class="btn btn-sm btn-warning" onclick="editDisease({{ disease.id }})">
+                                        <i class="fas fa-edit"></i> Sửa
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteDisease({{ disease.id }}, '{{ disease.name }}')">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                {% if not diseases %}
+                <div class="text-center py-5">
+                    <i class="fas fa-stethoscope fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">Chưa có bệnh nào</h4>
+                    <p class="text-muted">Hãy thêm bệnh đầu tiên của bạn</p>
+                    <a href="{{ url_for('add_disease') }}" class="btn btn-primary">
+                        <i class="fas fa-plus-circle"></i> Thêm bệnh mới
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xác nhận xóa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn có chắc chắn muốn xóa bệnh "<span id="diseaseName"></span>"?</p>
+                    <p class="text-danger"><small>Hành động này không thể hoàn tác!</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function() {
+            filterDiseases();
+        });
+
+        document.getElementById('categoryFilter').addEventListener('change', function() {
+            filterDiseases();
+        });
+
+        function filterDiseases() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const diseaseItems = document.querySelectorAll('.disease-item');
+
+            diseaseItems.forEach(item => {
+                const diseaseName = item.dataset.name;
+                const diseaseCategory = item.dataset.category;
+                
+                const matchesSearch = diseaseName.includes(searchTerm);
+                const matchesCategory = !categoryFilter || diseaseCategory === categoryFilter;
+                
+                if (matchesSearch && matchesCategory) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        let deleteId = null;
+
+        function viewDisease(id) {
+            // Implement view disease functionality
+            alert('Chức năng xem chi tiết sẽ được phát triển');
+        }
+
+        function editDisease(id) {
+            window.location.href = `/admin/diseases/${id}/edit`;
+        }
+
+
+        function deleteDisease(id, name) {
+            deleteId = id;
+            document.getElementById('diseaseName').textContent = name;
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+
+        document.getElementById('confirmDelete').addEventListener('click', function() {
+            if (deleteId) {
+                // Send delete request
+                fetch(`/admin/diseases/${deleteId}/delete`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Có lỗi xảy ra khi xóa bệnh');
+                    }
+                })
+                .catch(error => {
+                    alert('Có lỗi xảy ra khi xóa bệnh');
+                });
+                
+                bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+            }
+        });
+    </script>
+</body>
+</html>

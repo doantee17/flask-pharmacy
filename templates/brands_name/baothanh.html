@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bảo Thanh - Thuốc ho bổ phế hàng đầu Việt Nam</title>
+    <style>
+        /* Toàn bộ CSS giữ nguyên như bạn đã viết */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c5aa0;
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .hero {
+            padding: 6rem 0;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: -1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 0.3s both;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: linear-gradient(45deg, #ff9800, #f57c00);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease 0.6s both;
+            box-shadow: 0 4px 15px rgba(245, 124, 0, 0.4);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(245, 124, 0, 0.6);
+        }
+
+        .section {
+            padding: 5rem 0;
+            background: white;
+            margin: 2rem 0;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section:nth-child(even) {
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+        }
+
+        .section h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #2c5aa0;
+            position: relative;
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(45deg, #4caf50, #2e7d32);
+            border-radius: 2px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(44, 90, 160, 0.1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #2c5aa0;
+        }
+
+        .feature-card h3 {
+            color: #2c5aa0;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #2c5aa0;
+            display: block;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .section h2 {
+                font-size: 2rem;
+            }
+        }
+
+        .floating-elements {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-elements::before,
+        .floating-elements::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-elements::before {
+            width: 100px;
+            height: 100px;
+            top: 20%;
+            left: 10%;
+            animation-delay: -2s;
+        }
+
+        .floating-elements::after {
+            width: 60px;
+            height: 60px;
+            top: 60%;
+            right: 15%;
+            animation-delay: -4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+</head>
+{%include 'header.html' %}
+<body>
+
+    <section id="gioi-thieu" class="section">
+        <div class="container">
+            <h2>Giới thiệu về Bảo Thanh</h2>
+            <p style="font-size: 1.2rem; text-align: center; max-width: 800px; margin: 0 auto; color: #555; line-height: 1.8;">
+                Bảo Thanh là thương hiệu thuốc ho bổ phế hàng đầu của Công ty TNHH Dược phẩm Hoa Linh - được thành lập từ năm 2001. Với hơn 23 năm kinh nghiệm trong lĩnh vực dược phẩm, Bảo Thanh được bào chế dựa trên bài thuốc giảm ho bổ phế Xuyên bối tỳ bà cao với lịch sử hơn 300 năm. Sản phẩm không chỉ giảm ho mà còn bổ phế, kế thừa tinh hoa y học cổ truyền phương Đông và kinh nghiệm dân gian Việt Nam.
+            </p>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">🌿</div>
+                    <h3>Thảo dược tự nhiên</h3>
+                    <p>Chứa dịch chiết Xuyên bối mẫu và cao lỏng của hỗn hợp các dược liệu tự nhiên như Tỳ bà diệp, Ô mai, Cam thảo, Sa sâm, Phục linh.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔬</div>
+                    <h3>Công nghệ hiện đại</h3>
+                    <p>Sản xuất theo tiêu chuẩn GMP, cGMP, GLP, GSP-WHO và tiêu chuẩn quản lý chất lượng ISO 9001:2015.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💊</div>
+                    <h3>Bổ phế trừ ho</h3>
+                    <p>Không chỉ giảm ho mà còn bổ phế, giúp tăng cường sức đề kháng và giảm tái phát các bệnh về đường hô hấp.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="san-pham" class="section">
+        <div class="container">
+            <h2>Dòng sản phẩm Bảo Thanh</h2>
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">🍯</div>
+                    <h3>Siro Bảo Thanh 125ml</h3>
+                    <p>Siro ho bổ phế dạng chai 125ml tiện lợi, thích hợp cho mọi lứa tuổi từ trẻ em đến người lớn.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🍬</div>
+                    <h3>Viên ngậm Bảo Thanh</h3>
+                    <p>Viên ngậm ho bổ phế tiện lợi, dễ sử dụng mọi lúc mọi nơi, phù hợp cho người bận rộn.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌱</div>
+                    <h3>Công thức truyền thống</h3>
+                    <p>Kế thừa bài thuốc cổ phương hơn 300 năm, kết hợp với mật ong và các vị thuốc dân gian Việt Nam.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="thanh-tuu" class="section">
+        <div class="container">
+            <h2>Thành tựu nổi bật</h2>
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-number">23+</span>
+                    <div class="stat-label">Năm kinh nghiệm Hoa Linh</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">300+</span>
+                    <div class="stat-label">Năm bài thuốc cổ phương</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">2001</span>
+                    <div class="stat-label">Năm thành lập</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">2022</span>
+                    <div class="stat-label">Top 1 Hàng Việt yêu thích</div>
+                </div>
+            </div>
+            
+            <div class="features" style="margin-top: 3rem;">
+                <div class="feature-card">
+                    <div class="feature-icon">🏆</div>
+                    <h3>Giải thưởng Ngôi sao thuốc Việt</h3>
+                    <p>Được Bộ Y tế tặng giải thưởng Ngôi sao thuốc Việt nhằm tôn vinh thuốc sản xuất trong nước có chất lượng tốt.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🥇</div>
+                    <h3>Top 1 Hàng Việt yêu thích</h3>
+                    <p>Đạt giải Top 1 Hàng Việt Nam được người tiêu dùng yêu thích năm 2022, vượt trên hàng trăm sản phẩm cùng lĩnh vực.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Cam kết chất lượng</h3>
+                    <p>Sản phẩm đạt tiêu chuẩn quốc tế, an toàn tuyệt đối, được hàng triệu gia đình Việt Nam tin dùng.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Smooth scrolling cho navigation links (nếu bạn cần dùng trong tương lai)
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Animation khi scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Áp dụng animation cho các feature cards
+        document.querySelectorAll('.feature-card, .stat-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease';
+            observer.observe(el);
+        });
+
+        // Counter animation cho stats
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            counters.forEach(counter => {
+                const target = counter.textContent.includes('-') ? 
+                    counter.textContent : 
+                    +counter.textContent.replace('+', '');
+                
+                if (typeof target === 'number') {
+                    let count = 0;
+                    const increment = target / 100;
+
+                    function updateCounter() {
+                        count += increment;
+                        if (count < target) {
+                            counter.textContent = Math.ceil(count) + (counter.textContent.includes('+') ? '+' : '');
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            counter.textContent = target + (counter.textContent.includes('+') ? '+' : '');
+                        }
+                    }
+                    updateCounter();
+                }
+            });
+        }
+
+        // Kích hoạt animation counter khi phần thành tựu xuất hiện
+        const statsSection = document.getElementById('thanh-tuu');
+        const statsObserver = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting) {
+                animateCounters();
+                statsObserver.disconnect();
+            }
+        }, { threshold: 0.5 });
+
+        if (statsSection) {
+            statsObserver.observe(statsSection);
+        }
+    </script>
+
+</body>
+{%include 'footer.html' %}
+</html>

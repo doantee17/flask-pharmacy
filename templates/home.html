@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NHÀ THUỐC NHÓM 14 - Chăm sóc sức khỏe toàn diện</title>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .banner-slider {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            margin-top: 85px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .slides-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Navigation arrows */
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.8);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            color: #333;
+            transition: all 0.3s ease;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-arrow:hover {
+            background: rgba(255,255,255,0.95);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .nav-arrow.prev {
+            left: 20px;
+        }
+
+        .nav-arrow.next {
+            right: 20px;
+        }
+
+        /* Dots indicator */
+        .dots-container {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: rgba(255,255,255,0.9);
+            transform: scale(1.2);
+        }
+
+        .dot:hover {
+            background: rgba(255,255,255,0.8);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .banner-slider {
+                height: 250px;
+                margin-bottom: 20px;
+            }
+
+            .nav-arrow {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .nav-arrow.prev {
+                left: 10px;
+            }
+
+            .nav-arrow.next {
+                right: 10px;
+            }
+
+            .dots-container {
+                bottom: 15px;
+            }
+
+            .dot {
+                width: 10px;
+                height: 10px;
+            }
+        }
+        /* Featured Brands Section */
+.featured-brands-section {
+    padding: 60px 0;
+    background: white;
+}
+
+.brands-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.view-more-link {
+    color: #0ea5e9;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.view-more-link:hover {
+    color: #0284c7;
+}
+
+.brands-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.brand-card {
+    background: linear-gradient(135deg, var(--brand-color), var(--brand-color-light));
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.brand-card:nth-child(1) {
+    --brand-color: #60a5fa;
+    --brand-color-light: #93c5fd;
+}
+
+.brand-card:nth-child(2) {
+    --brand-color: #4ade80;
+    --brand-color-light: #86efac;
+}
+
+.brand-card:nth-child(3) {
+    --brand-color: #fb923c;
+    --brand-color-light: #fdba74;
+}
+
+.brand-card:nth-child(4) {
+    --brand-color: #f472b6;
+    --brand-color-light: #f9a8d4;
+}
+.brand-card:nth-child(5) {
+    --brand-color: #d1dd64;
+    --brand-color-light: #d0d96c; 
+}
+.brand-card:nth-child(6) {
+    --brand-color: #6a1b9a;       /* Tím đậm */
+    --brand-color-light: #7a61a0; /* Tím nhạt nhẹ */
+}
+
+
+.brand-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.brand-logo {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.brand-logo img {
+    width: 100%;
+    max-width: 120px;
+    height: auto;
+}
+
+.brand-discount {
+    margin-bottom: 20px;
+}
+
+.discount-text {
+    display: block;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.discount-value {
+    display: block;
+    color: white;
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.brand-product {
+    margin-top: auto;
+}
+
+.brand-product img {
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .brands-header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+    
+    .brands-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .brand-card {
+        min-height: 300px;
+    }
+}
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+
+        /* Hero Banner */
+        .hero-section {
+            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #0891b2 100%);
+            padding: 80px 0;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="pills" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="2" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23pills)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #fff, #e0f2fe);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .hero-features {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.1);
+            padding: 15px 25px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .feature-item i {
+            font-size: 20px;
+            color: #fbbf24;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(245, 158, 11, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.9);
+            color: #0891b2;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        /* Product Categories */
+        .categories-section {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #1e293b;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 60px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            border: 1px solid #e2e8f0;
+        }
+
+        .category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .category-icon {
+            background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .category-icon i {
+            font-size: 40px;
+            color: white;
+            z-index: 2;
+            position: relative;
+        }
+
+        .category-content {
+            padding: 25px;
+        }
+
+        .category-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .category-description {
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .category-features {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .category-features li {
+            padding: 5px 0;
+            font-size: 0.9rem;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-features li::before {
+            content: '✓';
+            color: #10b981;
+            font-weight: bold;
+            font-size: 12px;
+            background: #dcfce7;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .category-btn {
+            background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .category-btn:hover {
+            background: linear-gradient(135deg, #0284c7, #0891b2);
+            transform: translateY(-2px);
+        }
+
+        /* Services Section */
+        .services-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .service-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        }
+
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .service-icon i {
+            font-size: 32px;
+            color: white;
+        }
+
+        .service-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 15px;
+        }
+
+        .service-description {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* Why Choose Us */
+        .why-choose-section {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .feature-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .feature-text {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* Newsletter */
+        .newsletter-section {
+            padding: 60px 0;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: white;
+        }
+
+        .newsletter-content {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .newsletter-btn {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 20px rgba(6, 182, 212, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(6, 182, 212, 0.5);
+        }
+
+        .back-to-top.show {
+            display: flex;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-features {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .categories-grid,
+            .services-grid,
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .newsletter-input {
+                width: 100%;
+                max-width: 400px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+            
+        }
+        /* Health Corner Section */
+.health-corner-section {
+    padding: 60px 0;
+    background: #f8fafc;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.view-all-link {
+    color: #0ea5e9;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.view-all-link:hover {
+    color: #0284c7;
+}
+
+.health-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 40px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.tab-btn {
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 12px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #64748b;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    min-width: fit-content;
+}
+
+.tab-btn.active,
+.tab-btn:hover {
+    background: #0ea5e9;
+    color: white;
+    border-color: #0ea5e9;
+}
+
+.health-articles-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 20px;
+}
+
+.main-article {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.main-article:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+}
+
+.main-article .article-image {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+}
+
+.main-article .article-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.article-category {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: rgba(14, 165, 233, 0.9);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.main-article .article-content {
+    padding: 25px;
+}
+
+.main-article .article-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #1e293b;
+    line-height: 1.4;
+    margin-bottom: 15px;
+}
+
+.article-excerpt {
+    color: #64748b;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+.side-articles {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.side-article,
+.right-article {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.side-article:hover,
+.right-article:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.side-article .article-image,
+.right-article .article-image {
+    position: relative;
+    height: 120px;
+    overflow: hidden;
+}
+
+.side-article .article-image img,
+.right-article .article-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.side-article .article-content,
+.right-article .article-content {
+    padding: 15px;
+}
+
+.side-article .article-title,
+.right-article .article-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.side-article .article-excerpt,
+.right-article .article-excerpt {
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.right-articles {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .health-articles-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .right-articles {
+        grid-column: span 2;
+        flex-direction: row;
+    }
+}
+
+@media (max-width: 768px) {
+    .health-tabs {
+        justify-content: flex-start;
+    }
+    
+    .health-articles-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .side-articles,
+    .right-articles {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .main-article .article-image {
+        height: 200px;
+    }
+}
+    </style>
+</head>
+{% include 'header.html' %}
+<body>
+     <section class="banner-slider">
+    <div class="slides-container">
+        <div class="slide active">
+            <img src="{{ url_for('static', filename='images/banner/banner1.jpg') }}" alt="Banner 1">
+        </div>
+        <div class="slide">
+            <img src="{{ url_for('static', filename='images/banner/banner2.jpg') }}" alt="Banner 2">
+        </div>
+        <div class="slide">
+            <img src="{{ url_for('static', filename='images/banner/banner3.jpg') }}" alt="Banner 3">
+        </div>
+        <div class="slide">
+            <img src="{{ url_for('static', filename='images/banner/banner4.jpg') }}" alt="Banner 4">
+        </div>
+        <div class="slide">
+            <img src="{{ url_for('static', filename='images/banner/banner5.jpg') }}" alt="Banner 5">
+        </div>
+    </div>
+
+    <!-- Navigation arrows -->
+    <button class="nav-arrow prev" onclick="previousSlide()">❮</button>
+    <button class="nav-arrow next" onclick="nextSlide()">❯</button>
+
+    <!-- Dots indicator -->
+    <div class="dots-container">
+        <span class="dot active" onclick="currentSlide(1)"></span>
+        <span class="dot" onclick="currentSlide(2)"></span>
+        <span class="dot" onclick="currentSlide(3)"></span>
+        <span class="dot" onclick="currentSlide(4)"></span>
+        <span class="dot" onclick="currentSlide(5)"></span>
+    </div>
+</section>
+
+<!-- Featured Brands Section -->
+<section class="featured-brands-section">
+    <div class="container">
+        <div class="brands-header">
+            <h2 class="section-title">Thương hiệu nổi bật</h2>
+        </div>
+        
+        <div class="brands-grid">
+            <div class="brand-card" data-brand="pediasure" style="cursor: pointer;">
+                <div class="brand-logo">
+                    <img src="{{ url_for('static', filename='images/brands/pediasure_logo.jpg') }}" alt="PediaSure">
+                </div>
+                <div class="brand-discount">
+                    <span class="discount-text">Giảm đến</span>
+                    <span class="discount-value">95K</span>
+                </div>
+                <div class="brand-product">
+                    <img src="{{ url_for('static', filename='images/brands/pediasure.jpg') }}" alt="PediaSure Product">
+                </div>
+            </div>
+
+            <div class="brand-card" data-brand="baothanh" style="cursor: pointer;">
+                <div class="brand-logo">
+                    <img src="{{ url_for('static', filename='images/brands/baothanhlogo2.jpg') }}" alt="Bảo Thanh">
+                </div>
+                <div class="brand-discount">
+                    <span class="discount-text">Giảm</span>
+                    <span class="discount-value">20%</span>
+                </div>
+                <div class="brand-product">
+                    <img src="{{ url_for('static', filename='images/brands/baothanh2.webp') }}" alt="Bảo Thanh">
+                </div>
+            </div>
+
+            <div class="brand-card" data-brand="welson" style="cursor: pointer;">
+                <div class="brand-logo">
+                    <img src="{{ url_for('static', filename='images/brands/welsonlogo.png') }}" alt="Welson">
+                </div>
+                <div class="brand-discount">
+                    <span class="discount-text">Giảm đến</span>
+                    <span class="discount-value">25%</span>
+                </div>
+                <div class="brand-product">
+                    <img src="{{ url_for('static', filename='images/brands/welson.png') }}" alt="Welson Product">
+                </div>
+            </div>
+
+            <div class="brand-card" data-brand="traphaco" style="cursor: pointer;">
+                <div class="brand-logo">
+                    <img src="{{ url_for('static', filename='images/brands/traphacologo.png') }}" alt="Traphaco">
+                </div>
+                <div class="brand-discount">
+                    <span class="discount-text">Giảm giá </span>
+                    <span class="discount-value">SỐC</span>
+                </div>
+                <div class="brand-product">
+                    <img src="{{ url_for('static', filename='images/brands/traphaco.webp') }}" alt="Traphaco Product">
+                </div>
+            </div>
+
+            <div class="brand-card" data-brand="thaiminh" style="cursor: pointer;">
+                <div class="brand-logo">
+                    <img src="{{ url_for('static', filename='images/brands/thaiminhlogo.png') }}" alt="Thái Minh">
+                </div>
+                <div class="brand-discount">
+                    <span class="discount-text">Khuyến mại</span>
+                    <span class="discount-value">5%</span>
+                </div>
+                <div class="brand-product">
+                    <img src="{{ url_for('static', filename='images/brands/thaiminh.jpg') }}" alt="Thái Minh Product">
+                </div>
+            </div>
+
+            <div class="brand-card" data-brand="neubria" style="cursor: pointer;">
+                <div class="brand-logo">
+                    <img src="{{ url_for('static', filename='images/brands/neulogo.png') }}" alt="Neubria">
+                </div>
+                <div class="brand-discount">
+                    <span class="discount-text">Giảm</span>
+                    <span class="discount-value">15%</span>
+                </div>
+                <div class="brand-product">
+                    <img src="{{ url_for('static', filename='images/brands/neu.png') }}" alt="Neubria Product">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- Product Categories -->
+    <section id="categories" class="categories-section">
+        <div class="container">
+            <h2 class="section-title">Danh Mục Sản Phẩm</h2>
+            <p class="section-subtitle">Đa dạng các loại thuốc và sản phẩm chăm sóc sức khỏe từ các thương hiệu uy tín hàng đầu</p>
+            
+            <div class="categories-grid">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <div class="category-content">
+                        <h3 class="category-title">Thuốc Kê Đơn</h3>
+                        <p class="category-description">Thuốc điều trị các bệnh lý theo đơn bác sĩ với chất lượng được kiểm định</p>
+                        <ul class="category-features">
+                            <li>Thuốc tim mạch</li>
+                            <li>Thuốc tiêu hóa</li>
+                            <li>Thuốc kháng sinh</li>
+                            <li>Thuốc nội tiết</li>
+                        </ul>
+                        <button class="category-btn" onclick="navigateToCategory('thuoc')">Xem Sản Phẩm</button>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <div class="category-content">
+                        <h3 class="category-title">Thực Phẩm Chức Năng</h3>
+                        <p class="category-description">Bổ sung dinh dưỡng thiết yếu cho cơ thể khỏe mạnh từ thiên nhiên</p>
+                        <ul class="category-features">
+                            <li>Vitamin & Khoáng chất</li>
+                            <li>Omega 3 & DHA</li>
+                            <li>Probiotics</li>
+                            <li>Thảo dược thiên nhiên</li>
+                        </ul>
+                        <button class="category-btn" onclick="navigateToCategory('thuc_pham_cn')">Xem Sản Phẩm</button>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="category-content">
+                        <h3 class="category-title">Dược Mỹ Phẩm</h3>
+                        <p class="category-description">Sản phẩm chăm sóc da và làm đẹp được bác sĩ da liễu khuyên dùng</p>
+                        <ul class="category-features">
+                            <li>Kem chống nắng</li>
+                            <li>Sữa rửa mặt</li>
+                            <li>Serum dưỡng da</li>
+                            <li>Điều trị mụn</li>
+                        </ul>
+                        <button class="category-btn" onclick="navigateToCategory('duoc_my_pham')">Xem Sản Phẩm</button>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <div class="category-content">
+                        <h3 class="category-title">Dụng Cụ Y Tế</h3>
+                        <p class="category-description">Thiết bị y tế chính hãng cho việc chăm sóc và theo dõi sức khỏe tại nhà</p>
+                        <ul class="category-features">
+                            <li>Máy đo huyết áp</li>
+                            <li>Máy đo đường huyết</li>
+                            <li>Nhiệt kế điện tử</li>
+                            <li>Khẩu trang y tế</li>
+                        </ul>
+                        <button class="category-btn" onclick="navigateToCategory('dung_cu_yt')">Xem Sản Phẩm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Health Corner Section -->
+<section class="health-corner-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Góc sức khỏe</h2>
+        </div>
+        <!-- Articles grid -->
+        <div class="health-articles-grid">
+            <!-- Main featured article -->
+            <div class="main-article" onclick="openArticle('main-announcement')">
+                <div class="article-image">
+                    <img src="{{ url_for('static', filename='images/map/bac_si.jpg') }}" alt="Thông báo chính thức">
+                    <div class="article-category">Tin truyền thông</div>
+                </div>
+                <div class="article-content">
+                    <h3 class="article-title">Bác sĩ Việt Nam trình diễn phẫu thuật nội soi toàn bộ thay cùng lúc 2 van tim trước chuyên gia quốc tế</h3>
+                    <p class="article-excerpt">SKĐS - Hôm nay (7/6), tại phòng mổ Bệnh viện Tim Hà Nội, các bác sĩ của bệnh viện đã trình diễn kỹ thuật phẫu thuật nội soi toàn bộ để thay cùng lúc van động...</p>
+                </div>
+            </div>
+
+            <!-- Side articles -->
+            <div class="side-articles">
+                <div class="side-article" onclick="openArticle('nexium-guide')">
+                    <div class="article-image">
+                        <img src="{{ url_for('static', filename='images/map/set.jpg') }}" alt="Sét đánh">
+                        <div class="article-category">Tin truyền thông</div>
+                    </div>
+                    <div class="article-content">
+                        <h4 class="article-title">Chuyên gia khuyến cáo gì sau khi 4 người ở Hà Tĩnh bị sét đánh tử vong?</h4>
+                        <p class="article-excerpt">SKĐS - Chỉ trong vòng 20 ngày, trên địa bàn Hà Tĩnh có 4 người tử vong do sét đánh....</p>
+                    </div>
+                </div>
+
+                <div class="side-article" onclick="openArticle('product-recall-guide')">
+                    <div class="article-image">
+                        <img src="{{ url_for('static', filename='images/map/omega3.webp') }}" alt="Sức Khỏe">
+                        <div class="article-category">Tin truyền thông</div>
+                    </div>
+                    <div class="article-content">
+                        <h4 class="article-title">Ngày mới với tin tức sức khỏe: Uống omega-3 có làm tăng cholesterol?</h4>
+                        <p class="article-excerpt">'Các nghiên cứu chỉ ra rằng omega-3 có khả năng cải thiện sức khỏe tim mạch bằng cách ảnh hưởng tích cực đến các chỉ số lipid trong máu'...</p>
+                    </div>
+                </div>
+
+                <div class="side-article" onclick="openArticle('pharmacy-guide')">
+                    <div class="article-image">
+                        <img src="{{ url_for('static', filename='images/map/mypham.webp') }}" alt="Mỹ phẩm handmade">
+                        <div class="article-category">Mỹ phẩm</div>
+                    </div>
+                    <div class="article-content">
+                        <h4 class="article-title">Ẩn họa từ mỹ phẩm 'handmade'...</h4>
+                        <p class="article-excerpt">Mỹ phẩm 'handmade' đang trở thành xu hướng, nhưng liệu chúng có thực sự an toàn?</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right column articles -->
+            <div class="right-articles">
+                <div class="right-article" onclick="openArticle('product-recall-news')">
+                    <div class="article-image">
+                        <img src="{{ url_for('static', filename='images/map/camthao.webp') }}" alt="Thông báo thu hồi">
+                        <div class="article-category">Sức khỏe</div>
+                    </div>
+                    <div class="article-content">
+                        <h4 class="article-title">Những lợi ích của rễ cam thảo, sử dụng thế nào cho đúng?...</h4>
+                        <p class="article-excerpt">Rễ cam thảo không chỉ là một vị thuốc quý trong Đông y mà còn mang lại nhiều lợi ích cho sức khỏe. Tuy nhiên, việc sử dụng đúng cách là rất quan trọng để tránh tác dụng phụ không mong muốn.</p>
+                    </div>
+                </div>
+
+                <div class="right-article" onclick="openArticle('medicine-lookup-guide')">
+                    <div class="article-image">
+                        <img src="{{ url_for('static', filename='images/map/giainhiet.jpg') }}" alt="Giải nhiệt">
+                        <div class="article-category">Tin truyền thông</div>
+                    </div>
+                    <div class="article-content">
+                        <h4 class="article-title">Giải nhiệt mùa hè: Những thực phẩm nên bổ sung</h4>
+                        <p class="article-excerpt">Trong mùa hè, việc bổ sung các thực phẩm mát lành, giàu vitamin và khoáng chất là rất cần thiết để duy trì sức khỏe. Hãy cùng khám phá những thực phẩm nên có trong thực đơn mùa hè của bạn!</p>
+                    </div>
+                </div>
+
+                <div class="right-article" onclick="openArticle('healthy-living-tips')">
+                    <div class="article-image">
+                        <img src="{{ url_for('static', filename='images/map/suythan.png') }}" alt="Sống khỏe">
+                        <div class="article-category">Sống khỏe</div>
+                    </div>
+                    <div class="article-content">
+                        <h4 class="article-title">4 thói quen phổ biến làm người trẻ tăng nguy cơ suy thận sớm</h4>
+                        <p class="article-excerpt">Thận giống như những 'nhân viên' đang gánh khối lượng công việc khổng lồ trong cơ thể do...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- Services -->
+    <section id="services" class="services-section">
+        <div class="container">
+            <h2 class="section-title">Dịch Vụ Của Chúng Tôi</h2>
+            <p class="section-subtitle">Cam kết mang đến trải nghiệm tốt nhất với dịch vụ chuyên nghiệp, tận tâm</p>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <h3 class="service-title">Hỗ Trợ 24/7</h3>
+                    <p class="service-description">Đội ngũ dược sĩ giàu kinh nghiệm sẵn sàng tư vấn về cách sử dụng thuốc an toàn và hiệu quả nhất</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <h3 class="service-title">Giao Hàng Nhanh</h3>
+                    <p class="service-description">Giao hàng trong vòng 2 giờ tại nội thành, miễn phí vận chuyển cho đơn hàng trên 300.000đ</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="service-title">Đảm Bảo Chất Lượng</h3>
+                    <p class="service-description">100% sản phẩm chính hãng, có nguồn gốc xuất xứ rõ ràng, được bảo quản đúng tiêu chuẩn dược phẩm</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="why-choose-section">
+        <div class="container">
+            <h2 class="section-title">Tại Sao Chọn Nhà Thuốc Nhóm 14?</h2>
+
+            <p class="section-subtitle">Phục vụ cộng đồng với sự tin tưởng và uy tín hàng đầu</p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-number">01</div>
+                    <h3 class="feature-title">Kinh Nghiệm Lâu Năm</h3>
+                    <p class="feature-text">Hơn 15 năm hoạt động trong lĩnh vực dược phẩm với đội ngũ dược sĩ chuyên nghiệp, am hiểu sâu sắc về thuốc</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-number">02</div>
+                    <h3 class="feature-title">Sản Phẩm Đa Dạng</h3>
+                    <p class="feature-text">Hơn 10.000 sản phẩm từ các thương hiệu uy tín trong nước và quốc tế, đáp ứng mọi nhu cầu chăm sóc sức khỏe</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-number">03</div>
+                    <h3 class="feature-title">Giá Cả Cạnh Tranh</h3>
+                    <p class="feature-text">Cam kết giá tốt nhất thị trường với nhiều chương trình khuyến mãi hấp dẫn, tích điểm đổi quà</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-number">04</div>
+                    <h3 class="feature-title">Hệ Thống Rộng Khắp</h3>
+                    <p class="feature-text">50+ chi nhánh trên toàn quốc, dễ dàng tiếp cận và phục vụ khách hàng tại mọi địa điểm</p>
+                </div>
+            </div>
+        </div>
+    </section>
+       <script>
+
+// Gọi hàm khi trang load
+document.addEventListener('DOMContentLoaded', updateCartCount);
+  let slideIndex = 1;
+        let slideInterval;
+
+        // Tự động chuyển slide
+        function autoSlide() {
+            slideInterval = setInterval(() => {
+                nextSlide();
+            }, 4000); // Chuyển slide mỗi 4 giây
+        }
+
+        // Chuyển đến slide tiếp theo
+        function nextSlide() {
+            slideIndex++;
+            if (slideIndex > 5) slideIndex = 1; // Thay số 5 bằng số slide bạn có
+            showSlide(slideIndex);
+        }
+
+        // Chuyển đến slide trước
+        function previousSlide() {
+            slideIndex--;
+            if (slideIndex < 1) slideIndex = 5; // Thay số 5 bằng số slide bạn có
+            showSlide(slideIndex);
+        }
+
+        // Chuyển đến slide cụ thể
+        function currentSlide(n) {
+            slideIndex = n;
+            showSlide(slideIndex);
+            // Reset auto slide
+            clearInterval(slideInterval);
+            autoSlide();
+        }
+
+        // Hiển thị slide
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            
+            // Ẩn tất cả slides
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+            
+            // Hiển thị slide hiện tại
+            if (slides[n-1]) slides[n-1].classList.add('active');
+            if (dots[n-1]) dots[n-1].classList.add('active');
+        }
+
+        // Khởi động auto slide khi trang load
+        document.addEventListener('DOMContentLoaded', () => {
+            autoSlide();
+        });
+
+        // Dừng auto slide khi hover
+        const banner = document.querySelector('.banner-slider');
+        if (banner) {
+            banner.addEventListener('mouseenter', () => {
+                clearInterval(slideInterval);
+            });
+
+            // Tiếp tục auto slide khi không hover
+            banner.addEventListener('mouseleave', () => {
+                autoSlide();
+            });
+        }
+    
+        // Thêm vào phần script
+// Hàm điều hướng đơn giản
+function navigateToBrand(brandName) {
+    window.location.href = '/brand/' + brandName;
+}
+
+// Hàm điều hướng an toàn với kiểm tra
+function navigateToBrandSafe(brandName) {
+    const url = '/brand/' + brandName;
+    
+    // Kiểm tra xem trang có tồn tại không trước khi điều hướng
+    fetch(url, { method: 'HEAD' })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = url;
+            } else {
+                console.error('Trang không tồn tại:', brandName);
+                alert('Trang thương hiệu này chưa có sẵn!');
+            }
+        })
+        .catch(error => {
+            console.error('Lỗi khi kiểm tra trang:', error);
+            // Vẫn thử điều hướng
+            window.location.href = url;
+        });
+}
+
+// Sự kiện cho các card
+document.addEventListener('DOMContentLoaded', function() {
+    const brandCards = document.querySelectorAll('.brand-card');
+    
+    brandCards.forEach(card => {
+        card.addEventListener('click', function() {
+            // Lấy brand name từ data-brand attribute
+            const brandName = this.getAttribute('data-brand');
+            if (brandName) {
+                // Sử dụng hàm điều hướng an toàn
+                navigateToBrand(brandName);
+                // Hoặc sử dụng hàm điều hướng đơn giản:
+                // navigateToBrand(brandName);
+            }
+        });
+    });
+});
+// Thêm vào phần script
+function openArticle(articleId) {
+    // Object chứa mapping từ articleId đến link bài báo thực tế
+    const articleLinks = {
+        'main-announcement': 'https://suckhoedoisong.vn/bac-si-viet-nam-trinh-dien-phau-thuat-noi-soi-toan-bo-thay-cung-luc-2-van-tim-truoc-chuyen-gia-quoc-te-169250607180058709.htm',
+        'nexium-guide': 'https://suckhoedoisong.vn/chuyen-gia-khuyen-cao-gi-sau-khi-4-nguoi-o-ha-tinh-bi-set-danh-tu-vong-169250607172551506.htm', 
+        'product-recall-guide': 'https://thanhnien.vn/ngay-moi-voi-tin-tuc-suc-khoe-uong-omega-3-co-lam-tang-cholesterol-185250606234653578.htm',
+        'pharmacy-guide': 'https://vnexpress.net/an-hoa-tu-my-pham-handmade-4889772.html',
+        'product-recall-news': 'https://dantri.com.vn/suc-khoe/nhung-loi-ich-cua-re-cam-thao-su-dung-the-nao-cho-dung-20250607071352703.htm',
+        'medicine-lookup-guide': 'https://suckhoedoisong.vn/5-vi-thuoc-phong-va-tri-cam-nang-16925060620493661.htm',
+        'healthy-living-tips': 'https://tuoitre.vn/4-thoi-quen-pho-bien-lam-nguoi-tre-tang-nguy-co-suy-than-som-20250607152749035.htm'
+    };
+    
+    // Lấy link tương ứng với articleId
+    const articleUrl = articleLinks[articleId];
+    
+    if (articleUrl) {
+        // Mở link trong tab mới
+        window.open(articleUrl, '_blank');
+    } else {
+        console.log('Không tìm thấy link cho bài viết:', articleId);
+    }
+}
+// Điều hướng đến trang danh mục sản phẩm
+function navigateToCategory(category) {
+        window.location.href = `/products/${category}`;
+    }
+
+</script>
+    {% include 'footer.html' %}

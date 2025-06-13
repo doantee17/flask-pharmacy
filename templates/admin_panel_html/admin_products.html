@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý sản phẩm - Nhà thuốc Online</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .admin-sidebar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .admin-sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 12px 20px;
+            margin: 5px 0;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .admin-sidebar .nav-link:hover,
+        .admin-sidebar .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .main-content {
+            padding: 20px;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+        .products-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        .products-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+            margin: -30px -30px 30px -30px;
+        }
+        .product-card {
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            background: white;
+        }
+        .product-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .product-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            border-radius: 10px 10px 0 0;
+        }
+        .product-body {
+            padding: 20px;
+        }
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+        .badge-category {
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+        .btn-action {
+            margin: 2px;
+            border-radius: 6px;
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+        .stats-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            flex: 1;
+        }
+        .stat-item.thuc_pham_cn {
+            background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+        }
+        .stat-item.duoc_my_pham {
+            background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
+        }
+        .stat-item.dung_cu_yt {
+            background: linear-gradient(135deg, #ffa726 0%, #ff7043 100%);
+        }
+        .stat-item.thuoc {
+            background: linear-gradient(135deg, #ef5350 0%, #c62828 100%);
+        }
+        .alert {
+            border-radius: 8px;
+            border: none;
+        }
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .product-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .product-detail-item {
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        .product-detail-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .product-detail-value {
+            font-weight: 600;
+            color: #495057;
+        }
+        .actions-section {
+            border-top: 1px solid #e9ecef;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 admin-sidebar p-0">
+                <div class="p-3">
+                    <h4><i class="fas fa-user-shield"></i> Admin Panel</h4>
+                    <hr>
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="{{ url_for('admin_panel') }}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        <a class="nav-link active" href="{{ url_for('admin_products') }}">
+                            <i class="fas fa-pills"></i> Quản lý sản phẩm
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_orders') }}">
+                            <i class="fas fa-shopping-cart"></i> Quản lý đơn hàng
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_diseases') }}">
+                            <i class="fas fa-stethoscope"></i> Quản lý bệnh
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_users') }}">
+                            <i class="fas fa-user"></i> Quản lý người dùng
+                        </a>                        
+                        <hr>
+                        <a class="nav-link" href="{{ url_for('home') }}">
+                            <i class="fas fa-home"></i> Về trang chủ
+                        </a>
+                        <a class="nav-link" href="{{ url_for('logout') }}">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2><i class="fas fa-product-hunt"></i> Quản lý sản phẩm</h2>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{{ url_for('admin_panel') }}">Dashboard</a></li>
+                                <li class="breadcrumb-item active">Admin Products</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <span class="text-muted">Xin chào, Admin!</span>
+                </div>
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                                <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }}"></i>
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <!-- Statistics -->
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <h4>{{ products|length if products else 0 }}</h4>
+                        <small>Tổng sản phẩm</small>
+                    </div>
+                    <div class="stat-item thuc_pham_cn">
+                        <h4>{{ products|selectattr('category', 'equalto', 'thuc_pham_cn')|list|length if products else 0 }}</h4>
+                        <small>Thực phẩm chức năng</small>
+                    </div>
+                    <div class="stat-item duoc_my_pham">
+                        <h4>{{ products|selectattr('category', 'equalto', 'duoc_my_pham')|list|length if products else 0 }}</h4>
+                        <small>Dược mỹ phẩm</small>
+                    </div>
+                    <div class="stat-item dung_cu_yt">
+                        <h4>{{ products|selectattr('category', 'equalto', 'dung_cu_yt')|list|length if products else 0 }}</h4>
+                        <small>Dụng cụ y tế</small>
+                    </div>
+                    <div class="stat-item thuoc">
+                        <h4>{{ products|selectattr('category', 'equalto', 'thuoc')|list|length if products else 0 }}</h4>
+                        <small>Thuốc</small>
+                    </div>
+                </div>
+
+                <!-- Products List -->
+                <div class="products-container">
+                    <div class="products-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0"><i class="fas fa-list"></i> Danh sách sản phẩm</h4>
+                            <a href="{{ url_for('add_product') }}" class="btn btn-light">
+                                <i class="fas fa-plus"></i> Thêm sản phẩm mới
+                            </a>
+                        </div>
+                    </div>
+  <!-- Filter Section -->
+                    <div class="row mb-4 mt-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Loại sản phẩm</label>
+                            <select name="category" class="form-select" onchange="filterProducts()">
+                                <option value="" {{ 'selected' if request.args.get('category', '') == '' }}>Tất cả</option>
+                                <option value="thuc_pham_cn" {{ 'selected' if request.args.get('category') == 'thuc_pham_cn' }}>Thực phẩm chức năng</option>
+                                <option value="duoc_my_pham" {{ 'selected' if request.args.get('category') == 'duoc_my_pham' }}>Dược mỹ phẩm</option>
+                                <option value="dung_cu_yt" {{ 'selected' if request.args.get('category') == 'dung_cu_yt' }}>Dụng cụ y tế</option>
+                                <option value="thuoc" {{ 'selected' if request.args.get('category') == 'thuoc' }}>Thuốc</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {% if products %}
+                        {% for product in products %}
+                        <div class="product-card" id="product-{{ product['id'] }}">
+                            <div class="product-header">
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-product-hunt"></i> #{{ product['id'] }} - {{ product['name'] }}
+                                        </h6>
+                                        <small class="text-muted">Ngày tạo: {{ product['created_at'] | format_datetime if product['created_at'] else 'N/A' }}</small>
+                                    </div>
+                                    <div class="col-md-3 text-center">
+                                        {% if product['category'] == 'thuc_pham_cn' %}
+                                            <span class="badge bg-success badge-category">Thực phẩm chức năng</span>
+                                        {% elif product['category'] == 'duoc_my_pham' %}
+                                            <span class="badge bg-info badge-category">Dược mỹ phẩm</span>
+                                        {% elif product['category'] == 'dung_cu_yt' %}
+                                            <span class="badge bg-warning badge-category">Dụng cụ y tế</span>
+                                        {% elif product['category'] == 'thuoc' %}
+                                            <span class="badge bg-danger badge-category">Thuốc</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-3 text-end">
+                                        <strong class="text-primary">{{ product['price'] | format_number }}đ</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-body">
+                                <div class="row">
+                                    <div class="col-md-3 text-center">
+                                        {% if product['image_url'] and product['image_url'] != '' %}
+                                            <img src="{{ product['image_url'] }}" alt="{{ product['name'] }}" class="product-image">
+                                        {% else %}
+                                            <img src="{{ url_for('static', filename='images/default.jpg') }}" alt="Default" class="product-image">
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="product-details">
+                                            <div class="product-detail-item">
+                                                <span class="product-detail-label">Tên sản phẩm</span>
+                                                <span class="product-detail-value">{{ product['name'] }}</span>
+                                            </div>
+                                            <div class="product-detail-item">
+                                                <span class="product-detail-label">Giá</span>
+                                                <span class="product-detail-value text-success">{{ product['price'] | format_number }}đ</span>
+                                            </div>
+                                            <div class="product-detail-item">
+                                                <span class="product-detail-label">Tồn kho</span>
+                                                <span class="product-detail-value">
+                                                    {% if product['stock_quantity'] > 10 %}
+                                                        <span class="text-success">{{ product['stock_quantity'] }} (Còn hàng)</span>
+                                                    {% elif product['stock_quantity'] > 0 %}
+                                                        <span class="text-warning">{{ product['stock_quantity'] }} (Sắp hết)</span>
+                                                    {% else %}
+                                                        <span class="text-danger">{{ product['stock_quantity'] }} (Hết hàng)</span>
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                            <div class="product-detail-item">
+                                                <span class="product-detail-label">Mô tả</span>
+                                                <span class="product-detail-value">{{ product['description'][:100] if product['description'] else 'Chưa có mô tả' }}{{ '...' if product['description'] and product['description']|length > 100 else '' }}</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="actions-section">
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <h6 class="mb-2">Thao tác với sản phẩm:</h6>
+                                                    <a class="btn btn-outline-primary btn-action" href="{{ url_for('product_detail', product_id=product['id']) }}">
+                                                        <i class="fas fa-eye"></i> Xem chi tiết
+                                                    </a>
+
+                                                    <button class="btn btn-outline-success btn-action" onclick="editProduct({{ product['id'] }})">
+                                                        <i class="fas fa-edit"></i> Chỉnh sửa
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-4 text-end">
+                                                    <h6 class="mb-2">Hành động khác:</h6>
+                                                    <button class="btn btn-outline-danger btn-action" onclick="confirmDelete({{ product['id'] }}, '{{ product['name'] | e }}')">
+                                                        <i class="fas fa-trash"></i> Xóa
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-product-hunt fa-4x text-muted mb-4"></i>
+                            <h5 class="text-muted">Chưa có sản phẩm nào</h5>
+                            <p class="text-muted">Bắt đầu bằng cách thêm sản phẩm đầu tiên của bạn.</p>
+                            <a href="{{ url_for('add_product') }}" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Thêm sản phẩm mới
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="fas fa-exclamation-triangle"></i> Xác nhận xóa</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Bạn có chắc chắn muốn xóa sản phẩm <strong id="productName"></strong>?
+                    </div>
+                    <p class="text-muted">Hành động này không thể hoàn tác!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" id="confirmDeleteBtn" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Xóa sản phẩm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Details Modal -->
+    <div class="modal fade" id="productDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-product-circle"></i> Chi tiết sản phẩm</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="productDetailsContent">
+                    <div class="text-center">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p class="mt-2">Đang tải thông tin sản phẩm...</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Stock Modal -->
+    <div class="modal fade" id="stockModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-warehouse"></i> Cập nhật tồn kho</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="stockForm">
+                        <div class="mb-3">
+                            <label for="currentStock" class="form-label">Tồn kho hiện tại:</label>
+                            <input type="number" class="form-control" id="currentStock" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newStock" class="form-label">Tồn kho mới:</label>
+                            <input type="number" class="form-control" id="newStock" min="0" required>
+                        </div>
+                        <input type="hidden" id="stockProductId">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" onclick="saveStock()">
+                        <i class="fas fa-save"></i> Cập nhật
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function confirmDelete(productId, productName) {
+            document.getElementById('productName').textContent = productName;
+            const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            modal.show();
+            
+            document.getElementById('confirmDeleteBtn').onclick = function() {
+                $.ajax({
+                    url: '/admin/delete_product/' + productId,
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            document.getElementById('product-' + productId).remove();
+                            modal.hide();
+                            // Show success message
+                            const alertDiv = document.createElement('div');
+                            alertDiv.className = 'alert alert-success alert-dismissible fade show';
+                            alertDiv.innerHTML = `
+                                <i class="fas fa-check-circle"></i> ${response.message}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            `;
+                            document.querySelector('.main-content').insertBefore(alertDiv, document.querySelector('.stats-row'));
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra khi xóa sản phẩm!');
+                    }
+                });
+            };
+        }
+
+        function viewProductDetails(productId) {
+            const modal = new bootstrap.Modal(document.getElementById('productDetailsModal'));
+            const content = document.getElementById('productDetailsContent');
+            
+            content.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div>';
+            modal.show();
+            
+            // Simulate loading product details
+            setTimeout(() => {
+                content.innerHTML = '<div class="alert alert-info">Chức năng xem chi tiết sản phẩm sẽ được phát triển trong phiên bản tiếp theo.</div>';
+            }, 1000);
+        }
+
+        function editProduct(productId) {
+            // Redirect to edit product page
+            window.location.href = `/admin/edit_product/${productId}`;
+        }
+
+        function updateStock(productId, currentStock) {
+            document.getElementById('stockProductId').value = productId;
+            document.getElementById('currentStock').value = currentStock;
+            document.getElementById('newStock').value = currentStock;
+            
+            const modal = new bootstrap.Modal(document.getElementById('stockModal'));
+            modal.show();
+        }
+
+        function saveStock() {
+            const productId = document.getElementById('stockProductId').value;
+            const newStock = document.getElementById('newStock').value;
+            
+            if (!newStock || newStock < 0) {
+                alert('Vui lòng nhập số lượng tồn kho hợp lệ');
+                return;
+            }
+            // Reload page to see changes
+            location.reload();
+        }
+
+        function duplicateProduct(productId) {
+            if (confirm('Bạn có muốn tạo bản sao của sản phẩm này?')) {
+                // Simulate product duplication
+                alert(`Đã tạo bản sao của sản phẩm #${productId}. Chức năng này sẽ được hoàn thiện trong phiên bản tiếp theo.`);
+            }
+        }
+
+        // Thêm function này vào cuối phần <script> trong file HTML của bạn
+
+function filterProducts() {
+    const categorySelect = document.querySelector('select[name="category"]');
+    const selectedCategory = categorySelect.value;
+    
+    // Cách 1: Reload trang với parameter (phù hợp với Flask backend)
+    const currentUrl = new URL(window.location);
+    if (selectedCategory) {
+        currentUrl.searchParams.set('category', selectedCategory);
+    } else {
+        currentUrl.searchParams.delete('category');
+    }
+    window.location.href = currentUrl.toString();
+}
+    </script>
+</body>
