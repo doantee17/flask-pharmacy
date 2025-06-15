@@ -452,31 +452,31 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="page-header">
-            <h1><i class="fas fa-shopping-cart"></i> Thanh toán</h1>
-            <p>Vui lòng kiểm tra đơn hàng và điền thông tin để hoàn tất</p>
-        </div>
+<div class="container">
+    <div class="page-header">
+        <h1><i class="fas fa-shopping-cart"></i> Thanh toán</h1>
+        <p>Vui lòng kiểm tra đơn hàng và điền thông tin để hoàn tất</p>
+    </div>
 
-        <a href="javascript:history.back()" class="back-btn">
-            <i class="fas fa-arrow-left"></i> Quay lại
-        </a>
+    <a href="javascript:history.back()" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Quay lại
+    </a>
 
-        <form id="checkoutForm" method="POST" action="{{ url_for('process_order') }}">
-            <div class="checkout-layout">
-                <!-- Left Column - Products List -->
-                <div class="products-section">
-                    <h2 class="section-title">
-                        <i class="fas fa-pills"></i>
-                        Sản phẩm đã chọn
-                    </h2>
-                    
-                    <div class="products-list">
-                        <!-- VÒNG LẶP HIỂN THỊ NHIỀU SẢN PHẨM -->
+    <form id="checkoutForm" method="POST" action="{{ url_for('process_order') }}">
+        <div class="checkout-layout">
+            <!-- Left Column - Products List -->
+            <div class="products-section">
+                <h2 class="section-title">
+                    <i class="fas fa-pills"></i>
+                    Sản phẩm đã chọn
+                </h2>
+                
+                <div class="products-list">
+                    <!-- Trường hợp có danh sách products (từ giỏ hàng) -->
+                    {% if products %}
                         {% for product in products %}
                         <input type="hidden" name="product_ids" value="{{ product.id }}">
                         <input type="hidden" name="quantities" value="{{ product.quantity }}">
-
                         
                         <div class="product-item">
                             <div class="product-content">
@@ -515,207 +515,256 @@
                             </div>
                         </div>
                         {% endfor %}
-                    </div>
-                </div>
-
-                <!-- Right Column - Order Summary & Customer Form -->
-                <div class="order-section">
-                    <!-- Order Summary -->
-                    <div class="order-summary">
-                        <h3 class="summary-title">
-                            <i class="fas fa-calculator"></i>
-                            Tổng đơn hàng
-                        </h3>
+                    
+                    <!-- Trường hợp có một sản phẩm duy nhất (từ /buy/<product_id>) -->
+                    {% elif product %}
+                        <input type="hidden" name="product_ids" value="{{ product.id }}">
+                        <input type="hidden" name="quantities" value="1"> <!-- Mặc định số lượng là 1 -->
                         
-                        <div class="summary-row">
-                            <span>Số lượng sản phẩm:</span>
-                            <span>{{ products|length }} mặt hàng</span>
-                        </div>
-                        
-                        <div class="summary-row">
-                            <span>Tổng số lượng:</span>
-                            <span>{{ products|sum(attribute='quantity') }} sản phẩm</span>
-                        </div>
-                        
-                        <div class="summary-row">
-                            <span>Phí vận chuyển:</span>
-                            <span>Miễn phí</span>
-                        </div>
-                        
-                        <div class="summary-row total">
-                            <span>Tổng thanh toán:</span>
-                            <span>{{ "{:,.0f}".format(products|sum(attribute='total_price')) }}đ</span>
-                        </div>
-                    </div>
-
-                    <!-- Customer Information Form -->
-                    <div class="customer-form">
-                        <h3 class="form-title">
-                            <i class="fas fa-user"></i>
-                            Thông tin nhận hàng
-                        </h3>
-                        
-                        <div class="form-group">
-                            <label for="full_name">Họ và tên <span class="required">*</span></label>
-                            <input type="text" id="full_name" name="full_name" required placeholder="Nguyễn Văn A">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="phone">Số điện thoại <span class="required">*</span></label>
-                            <input type="tel" id="phone" name="phone" required placeholder="0123456789">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="email">Email <span class="required">*</span></label>
-                            <input type="email" id="email" name="email" required placeholder="example@email.com">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="address">Địa chỉ nhận hàng <span class="required">*</span></label>
-                            <textarea id="address" name="address" required placeholder="Nhập địa chỉ chi tiết..."></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Phương thức thanh toán <span class="required">*</span></label>
-                            <div class="payment-methods">
-                                <div class="payment-option">
-                                    <input type="radio" id="cod" name="payment_method" value="cod" required>
-                                    <label for="cod" class="payment-label">
-                                        <i class="fas fa-money-bill-wave payment-icon"></i>
-                                        <span>Thanh toán khi nhận hàng</span>
-                                    </label>
+                        <div class="product-item">
+                            <div class="product-content">
+                                <div class="product-image">
+                                    {% if product.image_url %}
+                                    <img src="{{ product.image_url }}" alt="{{ product.name }}"
+                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="default-image" style="display:none;">
+                                        <i class="fas fa-pills"></i>
+                                    </div>
+                                    {% else %}
+                                    <div class="default-image">
+                                        <i class="fas fa-pills"></i>
+                                    </div>
+                                    {% endif %}
                                 </div>
-                                <div class="payment-option">
-                                    <input type="radio" id="bank_transfer" name="payment_method" value="bank_transfer" required>
-                                    <label for="bank_transfer" class="payment-label">
-                                        <i class="fas fa-university payment-icon"></i>
-                                        <span>Chuyển khoản ngân hàng</span>
-                                    </label>
-                                </div>
-                                <div class="payment-option">
-                                    <input type="radio" id="momo" name="payment_method" value="momo" required>
-                                    <label for="momo" class="payment-label">
-                                        <i class="fas fa-mobile-alt payment-icon"></i>
-                                        <span>Ví MoMo</span>
-                                    </label>
-                                </div>
-                                <div class="payment-option">
-                                    <input type="radio" id="credit_card" name="payment_method" value="credit_card" required>
-                                    <label for="credit_card" class="payment-label">
-                                        <i class="fas fa-credit-card payment-icon"></i>
-                                        <span>Thẻ tín dụng</span>
-                                    </label>
+                                
+                                <div class="product-info">
+                                    <h3>{{ product.name }}</h3>
+                                    <p>{{ product.description or 'Sản phẩm chất lượng cao từ nhà thuốc uy tín' }}</p>
+                                    
+                                    <div class="product-pricing">
+                                        <div class="price-info">
+                                            <div class="unit-price">
+                                                Đơn giá: {{ "{:,.0f}".format(product.price) }}đ
+                                            </div>
+                                            <div class="total-price">
+                                                Tổng: {{ "{:,.0f}".format(product.price * 1) }}đ <!-- Tổng = đơn giá * số lượng -->
+                                            </div>
+                                        </div>
+                                        <div class="quantity-display">
+                                            <i class="fas fa-times"></i> 1
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="form-group">
-                            <label for="note">Ghi chú</label>
-                            <textarea id="note" name="note" placeholder="Ghi chú thêm cho đơn hàng (tùy chọn)..."></textarea>
-                        </div>
-
-                        <button type="submit" class="submit-btn">
-                            <i class="fas fa-check-circle"></i> Đặt hàng ngay
-                        </button>
-                    </div>
+                    
+                    <!-- Trường hợp không có sản phẩm -->
+                    {% else %}
+                        <p class="text-red-500">Không có sản phẩm nào được chọn.</p>
+                    {% endif %}
                 </div>
             </div>
-        </form>
-    </div>
-    <script>
 
-        const redirectToBuyUrl = "{{ url_for('buy') }}";
-        // Validate form before submit
-        document.getElementById('checkoutForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent default form submission
-            
-            const requiredFields = document.querySelectorAll('[required]');
-            let isValid = true;
-            
-            requiredFields.forEach(field => {
-                if (field.type === 'radio') {
-                    // Check if any radio button in the group is selected
-                    const radioGroup = document.querySelectorAll(`[name="${field.name}"]`);
-                    const isRadioSelected = Array.from(radioGroup).some(radio => radio.checked);
-                    if (!isRadioSelected) {
-                        // Highlight the payment method section
-                        const paymentSection = document.querySelector('.payment-methods');
-                        paymentSection.style.border = '2px solid #dc3545';
-                        paymentSection.style.borderRadius = '10px';
-                        paymentSection.style.padding = '10px';
-                        isValid = false;
-                    } else {
-                        const paymentSection = document.querySelector('.payment-methods');
-                        paymentSection.style.border = 'none';
-                        paymentSection.style.padding = '0';
-                    }
-                } else if (!field.value.trim()) {
-                    field.style.borderColor = '#dc3545';
-                    field.style.boxShadow = '0 0 0 3px rgba(220,53,69,0.1)';
+            <!-- Right Column - Order Summary & Customer Form -->
+            <div class="order-section">
+                <!-- Order Summary -->
+                <div class="order-summary">
+                    <h3 class="summary-title">
+                        <i class="fas fa-calculator"></i>
+                        Tổng đơn hàng
+                    </h3>
+                    
+                    <div class="summary-row">
+                        <span>Số lượng sản phẩm:</span>
+                        <span>{{ products|length if products is defined else 1 }} mặt hàng</span>
+                    </div>
+                    
+                    <div class="summary-row">
+                        <span>Tổng số lượng:</span>
+                        <span>{{ total_quantity }} sản phẩm</span>
+                    </div>
+                    
+                    <div class="summary-row">
+                        <span>Phí vận chuyển:</span>
+                        <span>Miễn phí</span>
+                    </div>
+                    
+                    <div class="summary-row total">
+                        <span>Tổng thanh toán:</span>
+                        <span>{{ "{:,.0f}".format(total_payment) }}đ</span>
+                    </div>
+                </div>
+
+                <!-- Customer Information Form -->
+                <div class="customer-form">
+                    <h3 class="form-title">
+                        <i class="fas fa-user"></i>
+                        Thông tin nhận hàng
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label for="full_name">Họ và tên <span class="required">*</span></label>
+                        <input type="text" id="full_name" name="full_name" required placeholder="Nguyễn Văn A">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Số điện thoại <span class="required">*</span></label>
+                        <input type="tel" id="phone" name="phone" required placeholder="0123456789">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email <span class="required">*</span></label>
+                        <input type="email" id="email" name="email" required placeholder="example@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="address">Địa chỉ nhận hàng <span class="required">*</span></label>
+                        <textarea id="address" name="address" required placeholder="Nhập địa chỉ chi tiết..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phương thức thanh toán <span class="required">*</span></label>
+                        <div class="payment-methods">
+                            <div class="payment-option">
+                                <input type="radio" id="cod" name="payment_method" value="cod" required>
+                                <label for="cod" class="payment-label">
+                                    <i class="fas fa-money-bill-wave payment-icon"></i>
+                                    <span>Thanh toán khi nhận hàng</span>
+                                </label>
+                            </div>
+                            <div class="payment-option">
+                                <input type="radio" id="bank_transfer" name="payment_method" value="bank_transfer" required>
+                                <label for="bank_transfer" class="payment-label">
+                                    <i class="fas fa-university payment-icon"></i>
+                                    <span>Chuyển khoản ngân hàng</span>
+                                </label>
+                            </div>
+                            <div class="payment-option">
+                                <input type="radio" id="momo" name="payment_method" value="momo" required>
+                                <label for="momo" class="payment-label">
+                                    <i class="fas fa-mobile-alt payment-icon"></i>
+                                    <span>Ví MoMo</span>
+                                </label>
+                            </div>
+                            <div class="payment-option">
+                                <input type="radio" id="credit_card" name="payment_method" value="credit_card" required>
+                                <label for="credit_card" class="payment-label">
+                                    <i class="fas fa-credit-card payment-icon"></i>
+                                    <span>Thẻ tín dụng</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="note">Ghi chú</label>
+                        <textarea id="note" name="note" placeholder="Ghi chú thêm cho đơn hàng (tùy chọn)..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-check-circle"></i> Đặt hàng ngay
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+
+    const redirectToBuyUrl = "{{ url_for('buy') }}";
+
+    // Validate form before submit
+    document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevent default form submission
+
+        const requiredFields = document.querySelectorAll('[required]');
+        let isValid = true;
+
+        requiredFields.forEach(field => {
+            if (field.type === 'radio') {
+                const radioGroup = document.querySelectorAll(`[name="${field.name}"]`);
+                const isRadioSelected = Array.from(radioGroup).some(radio => radio.checked);
+                if (!isRadioSelected) {
+                    const paymentSection = document.querySelector('.payment-methods');
+                    paymentSection.style.border = '2px solid #dc3545';
+                    paymentSection.style.borderRadius = '10px';
+                    paymentSection.style.padding = '10px';
                     isValid = false;
                 } else {
-                    field.style.borderColor = '#e1e5e9';
-                    field.style.boxShadow = 'none';
+                    const paymentSection = document.querySelector('.payment-methods');
+                    paymentSection.style.border = 'none';
+                    paymentSection.style.padding = '0';
                 }
-            });
-            
-            if (!isValid) {
-                alert('Vui lòng điền đầy đủ thông tin bắt buộc và chọn phương thức thanh toán!');
-                // Scroll to first invalid field
-                const firstInvalid = document.querySelector('[required][style*="border-color: rgb(220, 53, 69)"], .payment-methods[style*="border: 2px solid rgb(220, 53, 69)"]');
-                if (firstInvalid) {
-                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    if (firstInvalid.focus) firstInvalid.focus();
-                }
-                return;
-            }
-
-            // If validation passes, simulate order processing
-            const submitBtn = document.querySelector('.submit-btn');
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý đơn hàng...';
-            submitBtn.disabled = true;
-
-            // Simulate API call
-        // Phone number validation
-        document.getElementById('phone').addEventListener('input', function(e) {
-            this.value = this.value.replace(/[^0-9]/g, '');
-            if (this.value.length > 11) {
-                this.value = this.value.slice(0, 11);
+            } else if (!field.value.trim()) {
+                field.style.borderColor = '#dc3545';
+                field.style.boxShadow = '0 0 0 3px rgba(220,53,69,0.1)';
+                isValid = false;
+            } else {
+                field.style.borderColor = '#e1e5e9';
+                field.style.boxShadow = 'none';
             }
         });
 
-        // Add smooth animations and interactions
-        document.querySelectorAll('.form-group input, .form-group textarea, .form-group select').forEach(field => {
-            field.addEventListener('focus', function() {
-                this.parentElement.style.transform = 'scale(1.02)';
-                this.parentElement.style.transition = 'transform 0.3s ease';
-            });
-            
-            field.addEventListener('blur', function() {
-                this.parentElement.style.transform = 'scale(1)';
-            });
+        if (!isValid) {
+            alert('Vui lòng điền đầy đủ thông tin bắt buộc và chọn phương thức thanh toán!');
+            const firstInvalid = document.querySelector('[required][style*="border-color: rgb(220, 53, 69)"], .payment-methods[style*="border: 2px solid rgb(220, 53, 69)"]');
+            if (firstInvalid) {
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                if (firstInvalid.focus) firstInvalid.focus();
+            }
+            return;
+        }
+
+        // If validation passes, simulate order processing
+        const submitBtn = document.querySelector('.submit-btn');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý đơn hàng...';
+        submitBtn.disabled = true;
+
+        // Gửi form
+        e.target.submit();
+    });
+
+    // Phone number validation
+    document.getElementById('phone').addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value.length > 11) {
+            this.value = this.value.slice(0, 11);
+        }
+    });
+
+    // Add smooth animations and interactions
+    document.querySelectorAll('.form-group input, .form-group textarea, .form-group select').forEach(field => {
+        field.addEventListener('focus', function() {
+            this.parentElement.style.transform = 'scale(1.02)';
+            this.parentElement.style.transition = 'transform 0.3s ease';
         });
 
-        // Add product item hover effects
-        document.querySelectorAll('.product-item').forEach(item => {
-            item.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-3px) scale(1.01)';
-            });
-            
-            item.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0) scale(1)';
-            });
+        field.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'scale(1)';
+        });
+    });
+
+    // Add product item hover effects
+    document.querySelectorAll('.product-item').forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px) scale(1.01)';
         });
 
-        // Payment method selection effects
-        document.querySelectorAll('.payment-label').forEach(label => {
-            label.addEventListener('click', function() {
-                // Remove error styling when payment method is selected
-                const paymentSection = document.querySelector('.payment-methods');
-                paymentSection.style.border = 'none';
-                paymentSection.style.padding = '0';
-            });
+        item.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
         });
-    </script>
+    });
+
+    // Payment method selection effects
+    document.querySelectorAll('.payment-label').forEach(label => {
+        label.addEventListener('click', function() {
+            const paymentSection = document.querySelector('.payment-methods');
+            paymentSection.style.border = 'none';
+            paymentSection.style.padding = '0';
+        });
+    });
+
+</script>
+
 </body>
 </html>

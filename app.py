@@ -23,8 +23,6 @@ class CustomConverter(MySQLConverter):
     def _datetime_to_python(self, value, desc=None):
         return value  # Giữ nguyên kiểu datetime
 
-# test connect git
-
 app.secret_key = 'nha_thuoc_nhom14_secret_key'
 bcrypt = Bcrypt(app)
 
@@ -235,50 +233,89 @@ def admin_panel():
         flash('Vui lòng đăng nhập để truy cập Admin Panel!', 'error')
         return redirect(url_for('login'))
     
+
     conn = get_db_connection()
     if conn is None:
         return redirect(url_for('home'))
+    
+
     try:
-        with conn.cursor() as c:  # Cải tiến: Sử dụng with
-            c.execute('SELECT role FROM users WHERE id = %s', (session['user_id'],))  # Sửa lỗi: ? → %s
+        with conn.cursor() as c:
+            # Kiểm tra tài khoản admin
+            c.execute('SELECT role FROM users WHERE id = %s', (session['user_id'],))
             user = c.fetchone()
             if not user or user[0] != 'admin':
-                flash('Bạn không có quyền truy cập Admin Panel!', 'error')
+                flash('Bạn không có quyền truy cập!', 'error')
                 return redirect(url_for('home'))
             
+            # Thống kê tổng quát
             c.execute('SELECT COUNT(*) FROM products')
             total_products = c.fetchone()[0]
             
-            c.execute('SELECT COUNT(*) FROM orders')
+            # Tổng số đơn thật
+            c.execute("SELECT COUNT(id) FROM orders")
             total_orders = c.fetchone()[0]
 
-            c.execute('SELECT COUNT(*) FROM orders WHERE status = %s', ('pending',))
+            c.execute("SELECT COUNT(id) FROM orders WHERE status = %s", ('pending',))
             pending_orders = c.fetchone()[0]
-            
-            c.execute('SELECT COUNT(*) FROM users')
+
+
+
+            # Đếm số khách hàng
+            c.execute('SELECT COUNT(id) FROM users')
             total_users = c.fetchone()[0]
-            
-            c.execute('''SELECT o.id, u.username, p.name, o.quantity, o.total_price, o.status, o.created_at
-                        FROM orders o
-                        JOIN users u ON o.user_id = u.id
-                        JOIN products p ON o.product_id = p.id
-                        ORDER BY o.created_at DESC
-                        LIMIT 10''')
-            recent_orders = c.fetchall()
-        
+
+
+
+            # Lấy đơn hàng gần đây, nhiều sản phẩm
+            c.execute('''
+                SELECT o.id AS order_id, u.username, p.name AS product_name,
+                       oi.quantity, oi.unit_price, o.status, o.created_at
+                FROM orders o
+                JOIN users u ON o.user_id = u.id
+                JOIN order_items oi ON o.id = oi.order_id
+                JOIN products p ON oi.product_id = p.id
+                ORDER BY o.created_at DESC
+                LIMIT 30
+            ''')
+            orders_raw = c.fetchall()
+
+            # Gộp nhiều sản phẩm cùng đơn
+            recent_orders = {}
+            for row in orders_raw:
+                oid = row[0]
+                if oid not in recent_orders:
+                    recent_orders[oid] = {
+                        'id': oid,
+                        'username': row[1],
+                        'products': [],
+                        'status': row[5],
+                        'created_at': row[6],
+                        'total': 0
+                    }
+                recent_orders[oid]['products'].append(f"{row[2]} x{row[3]}")
+                recent_orders[oid]['total'] += row[3] * float(row[4])
+
+            recent_orders = list(recent_orders.values())
+
+
         stats = {
             'total_products': total_products,
             'total_orders': total_orders,
             'pending_orders': pending_orders,
             'total_users': total_users
         }
-        
-        return render_template('admin_panel_html/admin.html', 
-                             stats=stats, 
-                             recent_orders=recent_orders, 
-                             username=session.get('username'))
+
+        return render_template('admin_panel_html/admin.html',
+                                stats=stats,
+                                recent_orders=recent_orders,
+                                username=session.get('username'))
+    except Exception as e:
+        flash(f'Lỗi: {str(e)}!', 'error')
     finally:
         conn.close()
+
+
 
 @app.route('/admin/products')
 def admin_products():
@@ -868,14 +905,19 @@ def admin_orders():
     to_date = request.args.get('to_date')
 
     # Câu truy vấn có đầy đủ thông tin khách hàng
-    query = '''SELECT o.id AS order_id, u.username, p.name AS product_name,
-                      o.quantity, o.total_price, o.status, o.created_at, o.admin_notes,
-                      o.full_name, o.phone, o.email, o.address, o.city, o.district,
-                      o.payment_method, o.notes
-               FROM orders o
-               JOIN users u ON o.user_id = u.id
-               JOIN products p ON o.product_id = p.id
-               WHERE 1=1'''
+    query = '''
+        SELECT o.id AS order_id, u.username, p.name AS product_name,
+            oi.quantity, (oi.quantity * oi.unit_price) AS total_price,
+            o.status, o.created_at, o.admin_notes,
+            o.full_name, o.phone, o.email, o.address, o.city, o.district,
+            o.payment_method, o.notes
+        FROM orders o
+        JOIN users u ON o.user_id = u.id
+        JOIN order_items oi ON o.id = oi.order_id
+        JOIN products p ON oi.product_id = p.id
+        WHERE 1=1
+    '''
+
     params = []
 
     if status:
@@ -995,29 +1037,26 @@ def admin_users():
     finally:
         conn.close()
         
-@app.route('/admin/users/<int:user_id>/delete', methods=['POST'])
+@app.route('/admin/users/<int:user_id>/delete', methods=['DELETE'])
 @admin_required
 def delete_user(user_id):
     if user_id == session.get('user_id'):
-        flash('Bạn không thể tự xoá chính mình!', 'error')
-        return redirect(url_for('admin_users'))
+        return jsonify(success=False, message='Bạn không thể tự xoá chính mình!')
 
     conn = get_db_connection()
     if conn is None:
-        flash('Lỗi kết nối CSDL!', 'error')
-        return redirect(url_for('admin_users'))
+        return jsonify(success=False, message='Lỗi kết nối CSDL!')
 
     try:
         with conn.cursor() as c:
             c.execute('DELETE FROM users WHERE id = %s', (user_id,))
             conn.commit()
-            flash('Xoá người dùng thành công!', 'success')
+            return jsonify(success=True)
     except Exception as e:
-        flash(f'Lỗi khi xoá người dùng: {str(e)}', 'error')
+        return jsonify(success=False, message=f'Lỗi khi xoá người dùng: {str(e)}')
     finally:
         conn.close()
 
-    return redirect(url_for('admin_users'))
 
 
 @app.route('/change-password', methods=['GET', 'POST'])
@@ -1117,7 +1156,12 @@ def buy_product(product_id):
         flash('Sản phẩm không tồn tại!', 'error')
         return redirect(url_for('home'))
     
-    return render_template('checkout.html', product=product, username=session.get('username'))
+    # Tính total_payment cho sản phẩm duy nhất (giả sử quantity mặc định là 1)
+    total_payment = product['price'] * 1  # Hoặc lấy quantity từ form nếu có
+    total_quantity = 1  # Hoặc lấy quantity từ form nếu có
+    
+    return render_template('checkout.html', product=product, username=session.get('username'), 
+                          total_quantity=total_quantity, total_payment=total_payment)
 
 @app.route('/process_order', methods=['POST'])
 def process_order():
@@ -1133,6 +1177,7 @@ def process_order():
             flash('Dữ liệu sản phẩm không hợp lệ', 'error')
             return redirect(url_for('home'))
 
+        # Lấy thông tin người dùng nhập
         full_name = request.form.get('full_name', '').strip()
         phone = request.form.get('phone', '').strip()
         email = request.form.get('email', '').strip()
@@ -1144,64 +1189,111 @@ def process_order():
 
         conn = get_db_connection()
         if conn is None:
+            flash('Không thể kết nối đến cơ sở dữ liệu.', 'error')
             return redirect(url_for('home'))
 
-        total_price_all = 0
-        order_ids = []
-
         try:
+            total_price_all = 0
             with conn.cursor() as c:
+                # ✅ Tính tổng giá trước khi tạo đơn hàng
+                parsed_items = []  # Tạm lưu sản phẩm đã xử lý hợp lệ
                 for i in range(len(product_ids)):
                     product_id = int(product_ids[i])
-                    quantity = int(quantities[i])
-                    product = get_product_by_id(product_id)
-                    if not product:
-                        continue  # hoặc bỏ qua, hoặc raise Exception tùy bạn
+                    raw_quantity = quantities[i].strip()
 
-                    product_price = product['price']
-                    subtotal = product_price * quantity
-                    shipping_fee = 0  # bạn có thể cộng thêm 1 lần duy nhất nếu cần
-                    total_price = subtotal + shipping_fee
+                    if not raw_quantity:
+                        raise ValueError(f"Số lượng sản phẩm thứ {i+1} đang bị để trống")
+
+                    try:
+                        quantity = int(raw_quantity)
+                        if quantity <= 0:
+                            raise ValueError
+                    except ValueError:
+                        raise ValueError(f"Số lượng sản phẩm thứ {i+1} không hợp lệ: {raw_quantity}")
+
+                    product = get_product_by_id(product_id)
+                    if product is None:
+                        raise ValueError(f"Không tìm thấy sản phẩm có ID {product_id}")
+
+                    unit_price = product['price']
+                    total_price_all += unit_price * quantity
+                    parsed_items.append({
+                        'product_id': product_id,
+                        'quantity': quantity,
+                        'unit_price': unit_price
+                    })
+
+                # ✅ Tạo đơn hàng
+                c.execute('''
+                    INSERT INTO orders (
+                        user_id, full_name, phone, email, address, city, district,
+                        payment_method, notes, total_price, status, created_at
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'pending', NOW())
+                ''', (
+                    session['user_id'], full_name, phone, email, address, city, district,
+                    payment_method, notes, total_price_all
+                ))
+
+                order_id = c.lastrowid
+
+                # ✅ Thêm từng sản phẩm vào order_items
+                # ✅ Thêm từng sản phẩm vào order_items
+                for item in parsed_items:
+                    quantity = int(item['quantity'])
+                    unit_price = float(item['unit_price'])
+
+                    print("✅ DEBUG GIÁ TRỊ TRƯỚC INSERT:")
+                    print("   order_id:", order_id)
+                    print("   product_id:", item['product_id'])
+                    print("   quantity:", quantity, "| type:", type(quantity))
+                    print("   unit_price:", unit_price, "| type:", type(unit_price))
 
                     c.execute('''
-                        INSERT INTO orders (user_id, product_id, quantity, total_price,
-                                            full_name, phone, email, address, city, district,
-                                            payment_method, notes, status, created_at)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'pending', NOW())
+                        INSERT INTO order_items (order_id, product_id, quantity, unit_price)
+                        VALUES (%s, %s, %s, %s)
                     ''', (
-                        session['user_id'], product_id, quantity, total_price,
-                        full_name, phone, email, address, city, district,
-                        payment_method, notes
+                        order_id,
+                        item['product_id'],
+                        quantity,
+                        unit_price
                     ))
-                    conn.commit()
-                    order_id = c.lastrowid
-                    order_ids.append(order_id)
-                    total_price_all += total_price
+
+
+                conn.commit()
+
+            # ✅ Xóa giỏ hàng sau khi đặt hàng
+            session.pop('cart', None)
 
             return render_template(
                 'buy.html',
-                order_id=order_ids[0],  # hoặc truyền danh sách nếu muốn
+                order_id=order_id,
                 order_time=datetime.now().strftime("%d/%m/%Y %H:%M"),
                 order={'total': total_price_all},
                 payment_method=payment_method
             )
+
         finally:
             conn.close()
 
     except Exception as e:
+        import traceback
+        print("=== LỖI KHI ĐẶT HÀNG ===")
+        print(traceback.format_exc())
         flash(f'Có lỗi khi đặt hàng: {str(e)}', 'error')
         return redirect(url_for('home'))
 
-
     
 @app.route('/product/<int:product_id>')
+@app.route('/product/<int:product_id>')
 def product_detail_public(product_id):
-    product = get_product_by_id(product_id)  # Hàm này bạn đã có sẵn
+    product = get_product_by_id(product_id)
     if not product:
         flash("Sản phẩm không tồn tại!", "error")
-        return redirect(url_for('home'))  # hoặc url_for('products') nếu bạn có trang danh sách
+        return redirect(url_for('home'))
 
-    return render_template('product_detail.html', product=product)
+    from_category = request.args.get('from') or product.get('category', 'thuoc')
+    return render_template('product_detail.html', product=product, from_category=from_category)
+
 
 
 
@@ -1228,12 +1320,14 @@ def view_orders():
     try:
         with conn.cursor(dictionary=True) as c:
             c.execute('''
-                SELECT o.id, o.quantity, o.total_price, o.status, o.created_at, o.admin_notes,
-                       p.name as product_name, p.price as product_price, p.image_url as product_image
-                FROM orders o
-                JOIN products p ON o.product_id = p.id
-                WHERE o.user_id = %s
-                ORDER BY o.created_at DESC
+               SELECT o.id, o.status, o.created_at, o.admin_notes,
+                        p.name as product_name, p.price as product_price, p.image_url as product_image,
+                        oi.quantity, (oi.quantity * oi.unit_price) as total_price
+                    FROM orders o
+                    JOIN order_items oi ON o.id = oi.order_id
+                    JOIN products p ON oi.product_id = p.id
+                    WHERE o.user_id = %s
+                    ORDER BY o.created_at DESC
             ''', (session['user_id'],))
             orders = c.fetchall()
 
@@ -1377,11 +1471,18 @@ def add_to_cart():
     if not product_id:
         return jsonify({'success': False, 'message': 'Thiếu product_id'}), 400
 
+    # Kiểm tra sản phẩm có tồn tại và còn hàng
+    product = get_product_by_id(product_id)
+    if not product:
+        return jsonify({'success': False, 'message': 'Sản phẩm không tồn tại'}), 404
+    if product['stock_quantity'] < quantity:
+        return jsonify({'success': False, 'message': 'Số lượng sản phẩm không đủ'}), 400
+
     # Thêm vào session giỏ hàng
     cart = session.get('cart', {})
     cart[product_id] = cart.get(product_id, 0) + quantity
     session['cart'] = cart
-    session.modified = True  # BẮT BUỘC để Flask biết session có thay đổi
+    session.modified = True  # Đảm bảo session được cập nhật
 
     return jsonify({'success': True, 'message': 'Đã thêm vào giỏ hàng'})
 
@@ -1424,8 +1525,44 @@ def checkout():
     finally:
         conn.close()
 
-    return render_template('checkout.html', products=products)
+    # Tính tổng đơn hàng
+    total_quantity = sum(p['quantity'] for p in products)
+    total_payment = sum(p['total_price'] for p in products)
 
+    return render_template('checkout.html', products=products, total_quantity=total_quantity, total_payment=total_payment)
+
+
+@app.route('/update-cart-quantity', methods=['POST'])
+def update_cart_quantity():
+    try:
+        data = request.get_json()
+        item_id = str(data.get('item_id'))
+        quantity = data.get('quantity')
+
+        if item_id is None or quantity is None:
+            return jsonify({'success': False, 'message': 'Thiếu dữ liệu'}), 400
+
+        try:
+            quantity = int(quantity)
+        except (ValueError, TypeError):
+            return jsonify({'success': False, 'message': 'Số lượng không hợp lệ'}), 400
+
+        if quantity < 1:
+            return jsonify({'success': False, 'message': 'Số lượng phải >= 1'}), 400
+
+        cart = session.get('cart', {})
+        
+        if item_id in cart:
+            cart[item_id] = quantity  # 👉 chỉ là số nguyên
+            session['cart'] = cart
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'message': 'Không tìm thấy sản phẩm trong giỏ'}), 404
+
+    except Exception as e:
+        import traceback
+        print(">>> Lỗi update_cart_quantity:", traceback.format_exc())
+        return jsonify({'success': False, 'message': 'Lỗi server'}), 500
 
 
 @app.route('/diagnosis/<category>')

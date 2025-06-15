@@ -160,50 +160,55 @@
                 <!-- Recent Orders -->
                 <div class="order-table p-4">
                     <h4 class="mb-3">Đơn hàng gần đây</h4>
-                    <div class="table-responsive">
-                        <table class="table table-hover" id="ordersTable">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Khách hàng</th>
-                                    <th>Sản phẩm</th>
-                                    <th>Số lượng</th>
-                                    <th>Tổng tiền</th>
-                                    <th class="sortable-header" onclick="sortTable(5)">
-                                        Trạng thái
-                                        <i class="fas fa-sort sort-icon"></i>
-                                    </th>
-                                    <th class="sortable-header" onclick="sortTable(6)">
-                                        Ngày đặt
-                                        <i class="fas fa-sort sort-icon"></i>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for order in recent_orders %}
-                                <tr>
-                                    <td>#{{ order[0] }}</td>
-                                    <td>{{ order[1] if order[1] else 'Chưa có tên' }}</td>
-                                    <td>{{ order[2] }}</td>
-                                    <td>{{ order[3] }}</td>
-                                    <td>{{ "{:,.0f}".format(order[4]) }}đ</td>
-                                    <td>
-                                        {% if order[5] == 'pending' %}
-                                            <span class="badge bg-warning">Chờ duyệt</span>
-                                        {% elif order[5] == 'confirmed' %}
-                                            <span class="badge bg-success">Đã duyệt</span>
-                                        {% elif order[5] == 'shipped' %}
-                                            <span class="badge bg-info">Đã giao</span>
-                                        {% elif order[5] == 'cancelled' %}
-                                            <span class="badge bg-danger">Đã hủy</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ order[6] | format_datetime }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="ordersTable">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Khách hàng</th>
+                                        <th>Sản phẩm</th>
+                                        <th>Số mặt hàng</th>
+                                        <th>Tổng tiền</th>
+                                        <th class="sortable-header" onclick="sortTable(5)">
+                                            Trạng thái
+                                            <i class="fas fa-sort sort-icon"></i>
+                                        </th>
+                                        <th class="sortable-header" onclick="sortTable(6)">
+                                            Ngày đặt
+                                            <i class="fas fa-sort sort-icon"></i>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in recent_orders %}
+                                    <tr>
+                                        <td>#{{ order.id }}</td>
+                                        <td>{{ order.username if order.username else 'Chưa có tên' }}</td>
+                                        <td>
+                                            {% for product in order.products %}
+                                                {{ product }}<br>
+                                            {% endfor %}
+                                        </td>
+                                        <td>{{ order.products | length }}</td>
+                                        <td>{{ "{:,.0f}".format(order.total) }}đ</td>
+                                        <td>
+                                            {% if order.status == 'pending' %}
+                                                <span class="badge bg-warning">Chờ duyệt</span>
+                                            {% elif order.status == 'confirmed' %}
+                                                <span class="badge bg-success">Đã duyệt</span>
+                                            {% elif order.status == 'shipped' %}
+                                                <span class="badge bg-info">Đã giao</span>
+                                            {% elif order.status == 'cancelled' %}
+                                                <span class="badge bg-danger">Đã hủy</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ order.created_at | format_datetime }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
                     <div class="text-center mt-3">
                         <a href="{{ url_for('admin_orders') }}" class="btn btn-primary me-2">
                             Xem tất cả đơn hàng <i class="fas fa-arrow-right"></i>

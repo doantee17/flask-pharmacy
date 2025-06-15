@@ -295,11 +295,9 @@
                                             </td>
                                             <td>
                                                 {% if user.id != session.get('user_id') %}
-                                                <form method="post" action="{{ url_for('delete_user', user_id=user.id) }}" onsubmit="return confirm('Bạn có chắc chắn muốn xoá người dùng này không?');">
-                                                    <button type="submit" class="btn btn-sm btn-danger">
-                                                        <i class="fas fa-trash-alt"></i> Xoá
-                                                    </button>
-                                                </form>
+                                                <button type="button" class="btn btn-sm btn-danger" onclick="deleteUser({{ user.id }}, this)">
+                                                    <i class="fas fa-trash-alt"></i> Xoá
+                                                </button>
                                                 {% else %}
                                                 <span class="text-muted">(bạn)</span>
                                                 {% endif %}
@@ -322,5 +320,51 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function deleteUser(userId, button) {
+    if (!confirm('Bạn có chắc chắn muốn xóa người dùng này?')) return;
+
+    // Giao diện: Hiệu ứng đang xoá
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xoá...';
+
+    fetch(`/admin/users/${userId}/delete`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            // Xoá dòng khỏi bảng
+            const row = button.closest('tr');
+            if (row) row.remove();
+
+            // Thông báo thành công
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-success alert-dismissible fade show mt-3';
+            alert.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                Người dùng #${userId} đã được xoá thành công!
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            const mainContent = document.querySelector('.main-content');
+            mainContent.insertBefore(alert, mainContent.firstChild);
+        } else {
+            alert(data.message || 'Không thể xóa người dùng!');
+        }
+
+        button.disabled = false;
+        button.innerHTML = '<i class="fas fa-trash-alt"></i> Xoá';
+    })
+    .catch(error => {
+        console.error('Lỗi khi xoá người dùng:', error);
+        alert('Có lỗi xảy ra khi xoá người dùng!');
+        button.disabled = false;
+        button.innerHTML = '<i class="fas fa-trash-alt"></i> Xoá';
+    });
+}
+</script>
 </body>
 </html>
