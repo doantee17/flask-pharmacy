@@ -23,6 +23,8 @@ class CustomConverter(MySQLConverter):
     def _datetime_to_python(self, value, desc=None):
         return value  # Giữ nguyên kiểu datetime
 
+# test connect git
+
 app.secret_key = 'nha_thuoc_nhom14_secret_key'
 bcrypt = Bcrypt(app)
 
