@@ -1600,6 +1600,7 @@ def diagnosis(category='all'):
     finally:
         conn.close()
 
+# Route tìm kiếm
 @app.route('/search')
 def search():
     query = request.args.get('query', '')
@@ -1613,15 +1614,17 @@ def search():
     try:
         with conn.cursor(dictionary=True) as c: 
             if search_type == 'diseases':
-                c.execute('SELECT * FROM diseases WHERE name LIKE %s OR description LIKE %s OR symptoms LIKE %s', 
-                         (f'%{query}%', f'%{query}%', f'%{query}%'))  
+                c.execute('SELECT * FROM diseases WHERE LOWER(name) LIKE LOWER(%s)',
+                        (f'%{query}%',))
                 results = c.fetchall()
                 template = 'diagnosis.html'
                 data = {'diseases': results, 'query': query}
             else:
-                c.execute('SELECT * FROM products WHERE name LIKE %s OR description LIKE %s', 
-                         (f'%{query}%', f'%{query}%'))  
+                c.execute('SELECT * FROM products WHERE LOWER(name) LIKE LOWER(%s)',
+                        (f'%{query}%',))
                 results = c.fetchall()
+                # Lọc các sản phẩm có tên trống (chẳng hạn dòng test)
+                results = [p for p in results if p.get('name', '').strip() != '']
                 template = 'admin_panel_html/search_results.html'
                 data = {'products': results, 'query': query}
         
